@@ -1,3 +1,4 @@
+
 function atom(str) {
 	return {type:'atom', value:str};
 }
@@ -68,31 +69,31 @@ function recursivePrint(entity) {
 // where loc is the location of the first character of token
 function lex(str) {
 	function get_type(c) {
-	if(c == ' ')
-		return ' ';
-	if(c == '|')
-		return '|';
-	if("{}(),=?+-".indexOf(c) > -1)
-		return '!';
-	return 'x';
+		if(c == ' ')
+			return ' ';
+		if(c == '|')
+			return '|';
+		if("{}(),=?+-".indexOf(c) > -1)
+			return '!';
+		return 'x';
 	}
 	// console.log("str is: " + str);
 	var types = "";
 	for(i = 0; i < str.length; i++) {
-	types += get_type(str[i]);
+		types += get_type(str[i]);
 	}
 	// console.log("types is: " + types);
 	var retval = []
 	var start = 0;
 	while(start < str.length) {
-	var current = str[start];
-	var end = start+1;
-	while(end < str.length && types[end] == types[start]
-		  && types[end] != '!')
-		current += str[end++];
-	if(types[start] != ' ')
-		retval.push([current,start]);
-	start = end;
+		var current = str[start];
+		var end = start+1;
+		while(end < str.length && types[end] == types[start]
+			  && types[end] != '!')
+			current += str[end++];
+		if(types[start] != ' ')
+			retval.push([current,start]);
+		start = end;
 	}
 	return retval;
 		
@@ -104,51 +105,51 @@ function parse(lexdata) {
 	var types = [];
 	var locs = [];
 	for(var i = 0; i < lexdata.length; i++) {
-	tokens.push(lexdata[i][0]);
-	locs.push(lexdata[i][1]);
-	c = lexdata[i][0][0];
-	if("?|{},=()+".indexOf(c) > -1)
-		types.push(c);
-	else if(c == "-")
-		types.push("+");
-	else
-		types.push("x");
+		tokens.push(lexdata[i][0]);
+		locs.push(lexdata[i][1]);
+		c = lexdata[i][0][0];
+		if("?|{},=()+".indexOf(c) > -1)
+			types.push(c);
+		else if(c == "-")
+			types.push("+");
+		else
+			types.push("x");
 	}
 
 	var where = 0;
 	var failure = false;
 
 	function fail(s) {
-	if(failure)
-		return;
-	failure = s;
+		if(failure)
+			return;
+		failure = s;
 	}
 
 	function peekType() {
-	if(where >= tokens.length)
-		return "$";
-	return types[where];
+		if(where >= tokens.length)
+			return "$";
+		return types[where];
 	}
 
 	function pullValue(type) {
-	if(peekType() == '$') {
-		unexpectedFail();
-		return "error";
-	}
-	if(peekType() != type) {
-		fail("At " + locs[where] + ", expected " + type
-		 + ", but got " + peekType());
-		return "error";
-	}
-	return tokens[where++];
+		if(peekType() == '$') {
+			unexpectedFail();
+			return "error";
+		}
+		if(peekType() != type) {
+			fail("At " + locs[where] + ", expected " + type
+			 + ", but got " + peekType());
+			return "error";
+		}
+		return tokens[where++];
 	}
 
 	function unexpectedFail() {
-	if(where >= tokens.length)
-		fail("Unexpected end of input!");
-	else
-		fail("Unexpected token " + tokens[where]
-		 + " at location " + locs[where]);
+		if(where >= tokens.length)
+			fail("Unexpected end of input!");
+		else
+			fail("Unexpected token " + tokens[where]
+			 + " at location " + locs[where]);
 	}
 
 	
@@ -157,146 +158,146 @@ function parse(lexdata) {
 	
 
 	function readTerm() {
-	switch(peekType()) {
-	case '+':
-		var c = pullValue('+');
-		if(c == '+')
-		return unary_plus(readTerm());
-		else
-		return unary_minus(readTerm());
-	case '(':
-		pullValue('(');
-		ret = readExpression();
-		pullValue(')');
-		return ret;
-	case 'x':
-		return atom(pullValue('x'));
-	case '{':
-		pullValue('{');
-		ret = readBarList();
-		pullValue('}');
-		return ret;
-	default:
-		unexpectedFail();
-		return "error";
-	}
+		switch(peekType()) {
+			case '+':
+				var c = pullValue('+');
+				if(c == '+')
+					return unary_plus(readTerm());
+				else
+					return unary_minus(readTerm());
+			case '(':
+				pullValue('(');
+				ret = readExpression();
+				pullValue(')');
+				return ret;
+			case 'x':
+				return atom(pullValue('x'));
+			case '{':
+				pullValue('{');
+				ret = readBarList();
+				pullValue('}');
+				return ret;
+			default:
+				unexpectedFail();
+				return "error";
+		}
 	}
 
 	function readExpression() {
-	var running = readTerm();
-	while(!failure && peekType() == '+') {
-		var op = pullValue('+');
-		var second = readTerm();
-		if(op == '+')
-		running = parser_plus(running,second);
-		else
-		running = minus(running,second);
-	}
-	return running;
+		var running = readTerm();
+		while(!failure && peekType() == '+') {
+			var op = pullValue('+');
+			var second = readTerm();
+			if(op == '+')
+				running = parser_plus(running,second);
+			else
+				running = minus(running,second);
+		}
+		return running;
 	}
 
 	function readCommaList() {
-	var retval = [];
-	if(peekType() == '|' || peekType() == '}') {
-		return retval;
-	}
-	while(!failure) {
-		retval.push(readExpression());
+		var retval = [];
 		if(peekType() == '|' || peekType() == '}') {
-		return retval;
+			return retval;
 		}
-		pullValue(',');
-	}
+		while(!failure) {
+			retval.push(readExpression());
+			if(peekType() == '|' || peekType() == '}') {
+				return retval;
+			}
+			pullValue(',');
+		}
 	}
 
 	
 
 	function readCommand() {
-	var e1 = readExpression();
-	if(peekType() == '$') {
-		return e1;
-	}
-	if(peekType() == '?' || peekType() == '=') {
-		var op = pullValue(peekType());
-		var e2 = readExpression();
-		if(peekType() != '$') {
+		var e1 = readExpression();
+		if(peekType() == '$') {
+			return e1;
+		}
+		if(peekType() == '?' || peekType() == '=') {
+			var op = pullValue(peekType());
+			var e2 = readExpression();
+			if(peekType() != '$') {
+				unexpectedFail();
+				return "error";
+			}
+			return comparison(e1,op,e2);
+		}
 		unexpectedFail();
 		return "error";
-		}
-		return comparison(e1,op,e2);
-	}
-	unexpectedFail();
-	return "error";
 	}
 
 
 	function readBarList() {
-	var commaLists = [];
-	var bars = [];
-	var barLocs = [];
-	commaLists.push(readCommaList());
-	while(!failure && peekType() == '|') {
-		barLocs.push(where);
-		bars.push(pullValue('|'));
+		var commaLists = [];
+		var bars = [];
+		var barLocs = [];
 		commaLists.push(readCommaList());
-	}
-	
-	// now things get tricky
-	
-	if(bars.length == 0) {
-		// special syntax for games where both
-		// players have the same options...
-		// commaLists = [x], and we want brackets(x,x)
-		return brackets(commaLists[0],commaLists[0]);
-	}
-	return handleBrackets(commaLists,bars,barLocs);
+		while(!failure && peekType() == '|') {
+			barLocs.push(where);
+			bars.push(pullValue('|'));
+			commaLists.push(readCommaList());
+		}
+		
+		// now things get tricky
+		
+		if(bars.length == 0) {
+			// special syntax for games where both
+			// players have the same options...
+			// commaLists = [x], and we want brackets(x,x)
+			return brackets(commaLists[0],commaLists[0]);
+		}
+		return handleBrackets(commaLists,bars,barLocs);
 	}
 
 	function handleBrackets(commaLists,bars,barLocs) {
-	if(bars.length == 1)
-		return brackets(commaLists[0],commaLists[1]);
-	
-	var biggest = -1;
-	var first, last;
-	for(var i = 0; i < bars.length; i++) {
-		var val = bars[i].length;
-		if(val > biggest) {
-		biggest = val;
-		first = last = i;
-		}
-		else if(val == biggest)
-		last = i;
+		if(bars.length == 1)
+			return brackets(commaLists[0],commaLists[1]);
 		
-	}
-	if(last > first) {
-		lastLoc = barLocs[last];
-		firstLoc = barLocs[first];
-		sep = tokens[first];
-		fail("Ambiguous parse between " + sep +
-		 " at " + firstLoc + " and " + lastLoc);
-		return "error";
-	}
-	var cL1 = commaLists.slice(0,first+1);
-	var cL2 = commaLists.slice(first+1,commaLists.length);
-	var sep1 = bars.slice(0,first);
-	var sep2 = bars.slice(first+1,bars.length);
-	var debug1 = barLocs.slice(0,first);
-	var debug2 = barLocs.slice(first+1,bars.length);
-	var g1, g2;
-	if(cL1.length == 1)
-		g1 = cL1[0];
-	else
-		g1 = [handleBrackets(cL1,sep1,debug1)];
-	if(cL2.length == 1)
-		g2= cL2[0];
-	else
-		g2 = [handleBrackets(cL2,sep2,debug2)];
-	return brackets(g1,g2);
+		var biggest = -1;
+		var first, last;
+		for(var i = 0; i < bars.length; i++) {
+			var val = bars[i].length;
+			if(val > biggest) {
+				biggest = val;
+				first = last = i;
+			}
+			else if(val == biggest)
+				last = i;
+			
+		}
+		if(last > first) {
+			lastLoc = barLocs[last];
+			firstLoc = barLocs[first];
+			sep = tokens[first];
+			fail("Ambiguous parse between " + sep +
+			 " at " + firstLoc + " and " + lastLoc);
+			return "error";
+		}
+		var cL1 = commaLists.slice(0,first+1);
+		var cL2 = commaLists.slice(first+1,commaLists.length);
+		var sep1 = bars.slice(0,first);
+		var sep2 = bars.slice(first+1,bars.length);
+		var debug1 = barLocs.slice(0,first);
+		var debug2 = barLocs.slice(first+1,bars.length);
+		var g1, g2;
+		if(cL1.length == 1)
+			g1 = cL1[0];
+		else
+			g1 = [handleBrackets(cL1,sep1,debug1)];
+		if(cL2.length == 1)
+			g2= cL2[0];
+		else
+			g2 = [handleBrackets(cL2,sep2,debug2)];
+		return brackets(g1,g2);
 	}
 
 	var final_retval = readCommand();
 	if(failure)
-	return [false,failure];
+		return [false,failure];
 	return [true,final_retval];
 }
 
