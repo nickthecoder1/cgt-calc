@@ -315,6 +315,21 @@ function parse(lexdata) {
 
 // console.log(lexer("a bc|<||   diax? =} {"));
 
+function attemptAddNumberAtom(str){
+	// attempts to add any positive integer to the list of games
+	//return false; //uncomment this line to disable this feature
+	for (var i = 0; i<str.length; i++){
+		if ("0123456789".indexOf(str[i]) == -1) return false;
+	}
+	var num = Number(str);
+	var tmpNum = num
+	while (!(tmpNum.toString() in namesToValues)) tmpNum -= 1;
+	while (tmpNum < num){
+		tmpNum += 1;
+		calculate(tmpNum.toString()+" = {"+(tmpNum-1).toString()+"|}");
+	}
+	return true;
+}
 
 
 function toGame(entity) {
@@ -333,6 +348,7 @@ function toGame(entity) {
 			if(entity.value in namesToValues) {
 				return namesToValues[entity.value];
 			}
+			if (attemptAddNumberAtom(entity.value)) return namesToValues[entity.value];
 			return -1; // Can't find the variable, so returning an error code
 		case "brackets":
 			var lefts = [];
@@ -397,12 +413,14 @@ function calculate(input) {
 		data = data.value;
 		if(data in namesToValues)
 			return forceDisplay(namesToValues[data]);
+		if (attemptAddNumberAtom(data)) return forceDisplay(namesToValues[data]);
 		return "Error: unrecognized variable " + data;
 	}
 	if(data.type == "neg" && data.value.type == "atom") {
 		data = data.value.value;
 		if(data in namesToValues)
 			return forceDisplay(neg(namesToValues[data]));
+		if (attemptAddNumberAtom(data)) return forceDisplay(neg(namesToValues[data]));
 		return "Error: unrecognized variable " + data;
 	}
 	gData = toGame(data);
@@ -413,15 +431,6 @@ function calculate(input) {
 
 calculate("0 = {|}");
 calculate("1 = {0|}");
-calculate("2 = 1+1");
-calculate("3 = 1+2");
-calculate("4 = 1+3");
-calculate("5 = 1+4");
-calculate("6 = 1+5");
-calculate("7 = 1+6");
-calculate("8 = 1+7");
-calculate("9 = 1+8");
-calculate("10 = 1+9");
 calculate("* = {0}");
 calculate("*2 = {0,*}");
 calculate("*3 = {0,*,*2}");
