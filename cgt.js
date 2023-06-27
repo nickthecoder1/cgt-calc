@@ -4,6 +4,7 @@
 
 games = []
 comparison_cache = {}
+addition_cache = {}
 
 silent = true;
 
@@ -166,8 +167,20 @@ function neg(index) {
 	// console.log(arr);
 	return get_game(ell,arr);
 }
-
-function plus(g,h) {
+function plus(g,h){
+	var retVal;
+	if (addition_cache[g]){
+		retVal = addition_cache[g][h];
+	} else {
+		addition_cache[g] = {}
+	}
+	if (!retVal){
+		retVal = bare_plus(g,h);
+		addition_cache[g][h] = retVal;
+	}
+	return retVal
+}
+function bare_plus(g,h) {
 	// console.log("adding games " + g + " and " + h + " together.");
 	g = games[g];
 	h = games[h];
