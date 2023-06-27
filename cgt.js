@@ -169,9 +169,7 @@ function neg(index) {
 }
 function plus(g,h){
 	if (g > h){
-		var s = g;
-		g = h;
-		h = s;
+		[g, h] = [h, g];
 	}
 	var retVal;
 	if (addition_cache[g]){
