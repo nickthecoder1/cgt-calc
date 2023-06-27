@@ -67,6 +67,11 @@ function get_game(lefts, rights) {
 	// canonicalize,
 	// sigh, this is always a pain
 	while(remove_reversibles(g)); // [sic]
+	remove_dominated_options(g);
+	return g.index;
+}
+
+function remove_dominated_options(g){
 	var retained = [];
 	for(var i = 0; i < g.left.length; i++)
 		retained[i] = true;
@@ -107,9 +112,6 @@ function get_game(lefts, rights) {
 		}
 	}
 	g.right = newright;
-	
-
-	return g.index;
 }
 
 function remove_reversibles(g) {
