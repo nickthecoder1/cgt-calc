@@ -404,10 +404,9 @@ function calculate(input) {
 			return forceDisplay(neg(namesToValues[data]));
 		return "Error: unrecognized variable " + data;
 	}
-		
-	data = toGame(data);
-	if (data == -1) return "Error: unrecognized variable "
-	return display(data);
+	gData = toGame(data);
+	if (gData == -1) return "Error: unrecognized variable "
+	return display(gData);
 }
 
 
