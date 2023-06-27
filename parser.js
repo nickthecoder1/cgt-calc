@@ -319,21 +319,33 @@ function parse(lexdata) {
 function toGame(entity) {
 	switch(entity.type) {
 		case "plus":
-			return plus(toGame(entity.first),toGame(entity.second));
+			var fg = toGame(entity.first);
+			var sg = toGame(entity.second);
+			if (fg == -1) return -1;
+			if (sg == -1) return -1;
+			return plus(fg,sg);
 		case "neg":
-			return neg(toGame(entity.value));
+			var g = toGame(entity.value);
+			if (g == -1) return -1;
+			return neg(g);
 		case "atom":
 			if(entity.value in namesToValues) {
 				return namesToValues[entity.value];
 			}
-			return get_game([],[]); // FIXME
+			return -1; // Can't find the variable, so returning an error code
 		case "brackets":
 			var lefts = [];
 			var rights = [];
-			for(var i = 0; i < entity.first.length; i++)
-				lefts.push(toGame(entity.first[i]));
-			for(var i = 0; i < entity.second.length; i++)
-				rights.push(toGame(entity.second[i]));
+			for(var i = 0; i < entity.first.length; i++){
+				var g = toGame(entity.first[i])
+				if (g == -1) return -1;
+				lefts.push(g);
+			}
+			for(var i = 0; i < entity.second.length; i++){
+				var g = toGame(entity.second[i]);
+				if (g == -1) return -1;
+				rights.push(g);
+			}
 			return get_game(lefts,rights);
 	}
 }
@@ -354,6 +366,8 @@ function calculate(input) {
 		if(op == "?") {
 			first = toGame(first);
 			second = toGame(second);
+			if (first == -1) return "Error: unrecognized variable "
+			if (second == -1) return "Error: unrecognized variable "
 			first = games[first];
 			second = games[second];
 			var fs = le(first,second);
@@ -373,6 +387,7 @@ function calculate(input) {
 				return "Error: can't assign to non-variable " + recursivePrint(first);
 			first = first.value;
 			second = toGame(second);
+			if (second == -1) return "Error: unrecognized variable "
 			bind(first,second);
 			return first + " = " + forceDisplay(second);
 		}
@@ -391,6 +406,7 @@ function calculate(input) {
 	}
 		
 	data = toGame(data);
+	if (data == -1) return "Error: unrecognized variable "
 	return display(data);
 }
 
