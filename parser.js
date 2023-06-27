@@ -335,34 +335,22 @@ function attemptAddNumberAtom(str){
 function toGame(entity) {
 	switch(entity.type) {
 		case "plus":
-			var fg = toGame(entity.first);
-			var sg = toGame(entity.second);
-			if (fg == -1) return -1;
-			if (sg == -1) return -1;
-			return plus(fg,sg);
+			return plus(toGame(entity.first),toGame(entity.second));
 		case "neg":
-			var g = toGame(entity.value);
-			if (g == -1) return -1;
-			return neg(g);
+			return neg(toGame(entity.value));
 		case "atom":
 			if(entity.value in namesToValues) {
 				return namesToValues[entity.value];
 			}
 			if (attemptAddNumberAtom(entity.value)) return namesToValues[entity.value];
-			return -1; // Can't find the variable, so returning an error code
+			throw new Error('unrecognized variable '+entity.value);
 		case "brackets":
 			var lefts = [];
 			var rights = [];
-			for(var i = 0; i < entity.first.length; i++){
-				var g = toGame(entity.first[i])
-				if (g == -1) return -1;
-				lefts.push(g);
-			}
-			for(var i = 0; i < entity.second.length; i++){
-				var g = toGame(entity.second[i]);
-				if (g == -1) return -1;
-				rights.push(g);
-			}
+			for(var i = 0; i < entity.first.length; i++)
+				lefts.push(toGame(entity.first[i]));
+			for(var i = 0; i < entity.second.length; i++)
+				rights.push(toGame(entity.second[i]));
 			return get_game(lefts,rights);
 	}
 }
@@ -381,10 +369,12 @@ function calculate(input) {
 		var second = data.second;
 		var op = data.operator;
 		if(op == "?") {
-			first = toGame(first);
-			second = toGame(second);
-			if (first == -1) return "Error: unrecognized variable "
-			if (second == -1) return "Error: unrecognized variable "
+			try {
+				first = toGame(first);
+				second = toGame(second);
+			} catch (e) {
+				return e
+			}
 			first = games[first];
 			second = games[second];
 			var fs = le(first,second);
@@ -403,8 +393,11 @@ function calculate(input) {
 			if(first.type != "atom")
 				return "Error: can't assign to non-variable " + recursivePrint(first);
 			first = first.value;
-			second = toGame(second);
-			if (second == -1) return "Error: unrecognized variable "
+			try {
+				second = toGame(second);
+			} catch (e) {
+				return e
+			}
 			bind(first,second);
 			return first + " = " + forceDisplay(second);
 		}
@@ -423,8 +416,11 @@ function calculate(input) {
 		if (attemptAddNumberAtom(data)) return forceDisplay(neg(namesToValues[data]));
 		return "Error: unrecognized variable " + data;
 	}
-	gData = toGame(data);
-	if (gData == -1) return "Error: unrecognized variable "
+	try {
+		gData = toGame(data);
+	} catch (e) {
+		return e
+	}
 	return display(gData);
 }
 

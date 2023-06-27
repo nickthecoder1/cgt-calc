@@ -55,12 +55,6 @@ The following special syntaxes are supported:
 
 * Syntax like `{1||2|3}` for {1|{2|3}}.
 
-Bug: when unknown variables are used inside an expression,
-it errors, but does not list the variable that caused the error:
-
-    >> {asdf|3}
-    Error: unrecognized variable
-
 ## Features
 Currently, the only things implemented are a parser, and a very basic
 engine for manipulating partizan games, supporting the following
