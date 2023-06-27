@@ -168,6 +168,11 @@ function neg(index) {
 	return get_game(ell,arr);
 }
 function plus(g,h){
+	if (g > h){
+		var s = g;
+		g = h;
+		h = s;
+	}
 	var retVal;
 	if (addition_cache[g]){
 		retVal = addition_cache[g][h];
