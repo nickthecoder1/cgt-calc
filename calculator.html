@@ -16,6 +16,13 @@
     </form>
     <script type="text/javascript" src="cgt.js"></script>    
     <script type="text/javascript" src="parser.js"></script>    
-    <script type="text/javascript" src="main.js"></script>    
+    <script type="text/javascript" src="main.js"></script>
+    <p><span style="color:black">Examples: </span>
+      <br/>1 = {0|}
+      <br/>* = {0} <span style="color:black">({0} represents {0|0})</span>
+      <br/>2 ? {3|} <span style="color:black">("?" compares the 2 values)</span>
+      <br/>-1 ? {-1+*,1} <span style="color:black">({-1+*,1} represents {-1+*,1|-1+*,1} which = {1|-1+*} = {1|{-1|-1}})</span>
+      <br/>2+{0|1}
+    </p>
   </body>
 </html>
