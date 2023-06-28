@@ -12,28 +12,27 @@ them.  Variables can be assigned by writing things like
     >> x = {0| }
     >> y = {0|}-{1|x}
 
-Currently, the calculator only knows about 0, 1, and a few
+Currently, the calculator only knows about positive integers, and a few
 other games, so you must manually
-add things like *3, 5, and so on:
+add things like \*6, doubleup\*, and so on:
 
-    >> *3 = {0,*,*2|0,*,*2}
-    >> 5 = 2+3
-    >> doubleup = {0|*} + {0|*}
+    >> *6 = {0,*,*2,*3,*4,*5}
+    >> doubleup* = {0|*} + {0|*} + *
 
 Values are output in canonical form.  When possible, the output is
 described using values that have been named:
 
-    >> 1+1
-    {1|}
-    >> 2 = 1+1
-    2 = {1|}
-    >> 1+1
-    2
+    >> 1+*
+    {1|1}
+    >> 1* = 1+*
+    1* = {1|1}
+    >> 1+*
+    1*
     
 To get the canonical form of a named variable, you can enter its name
 
-    >> 2
-    {1|}
+    >> 1*
+    {1|1}
 
 To compare two games, separate them with ?
 
