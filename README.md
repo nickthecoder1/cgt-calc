@@ -65,6 +65,10 @@ operations:
 * Comparing games
 * Finding the canonical form.
 
+Additional features added by this fork:
+
+* Automatic conversion from positive integers into games
+
 ## Future goals
 On the level of a basic calculator, I would like to add additional
 operations, such as heating and cooling, mean values, atomic weights,
