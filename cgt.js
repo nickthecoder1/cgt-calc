@@ -168,9 +168,8 @@ function neg(index) {
 	return get_game(ell,arr);
 }
 function plus(g,h){
-	if (g > h){
+	if (g > h)
 		[g, h] = [h, g];
-	}
 	var retVal;
 	if (addition_cache[g]){
 		retVal = addition_cache[g][h];

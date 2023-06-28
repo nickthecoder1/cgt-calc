@@ -372,9 +372,7 @@ function calculate(input) {
 			try {
 				first = toGame(first);
 				second = toGame(second);
-			} catch (e) {
-				return e
-			}
+			} catch (e) {return e;}
 			first = games[first];
 			second = games[second];
 			var fs = le(first,second);
@@ -395,9 +393,7 @@ function calculate(input) {
 			first = first.value;
 			try {
 				second = toGame(second);
-			} catch (e) {
-				return e
-			}
+			} catch (e) {return e;}
 			bind(first,second);
 			return first + " = " + forceDisplay(second);
 		}
@@ -417,11 +413,9 @@ function calculate(input) {
 		return "Error: unrecognized variable " + data;
 	}
 	try {
-		gData = toGame(data);
-	} catch (e) {
-		return e
-	}
-	return display(gData);
+		data = toGame(data);
+	} catch (e) {return e;}
+	return display(data);
 }
 
 
