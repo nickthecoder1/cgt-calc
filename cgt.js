@@ -31,6 +31,43 @@ function isANumber(g){
 	return true;
 }
 
+bounds_cache = {}
+function innerbounds(g){
+	if (g.index){
+		if (bounds_cache[g.index]) return bounds_cache[g.index];
+		bounds_cache[g.index] = bare_innerbounds(g);
+		return bounds_cache[g.index];
+	}
+	return bare_innerbounds(g);
+}
+function bare_innerbounds(g){
+	if (isANumber(g)) return [g,g];
+	var leftbounds = []
+	for (var i = 0; i < g.left.length; i++)
+		leftbounds.push(innerbounds(g.left[i])[1])
+	var rightbounds = []
+	for (var i = 0; i < g.right.length; i++)
+		rightbounds.push(innerbounds(g.right[i])[0])
+	return [min(leftbounds),max(rightbounds)];
+}
+
+function min(g_list){
+	if (g_list.length == 0) throw new Error('min takes in a list of length greater than 0!');
+	var retVal = g_list[0];
+	for (var i=1; i<g_list.length; i++){
+		if (le(g_list[i],retVal)) retVal = g_list[i];
+	}
+	return retVal;
+}
+function max(g_list){
+	if (g_list.length == 0) throw new Error('max takes in a list of length greater than 0!');
+	var retVal = g_list[0];
+	for (var i=1; i<g_list.length; i++){
+		if (le(retVal,g_list[i])) retVal = g_list[i];
+	}
+	return retVal;
+}
+
 comparison_cache = {}
 function le(g,h) {
 	if(g.index && h.index) {

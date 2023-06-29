@@ -418,7 +418,7 @@ function calculate(input) {
 	return display(data);
 }
 
-
+// to test things: testFunc(games[toGame(parse(lex("{1|1}"))[1])])
 calculate("0 = {|}");
 calculate("1 = {0|}");
 calculate("* = {0}");
