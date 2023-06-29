@@ -179,10 +179,13 @@ function isANumber(g){
 }
 function bare_isANumber(g){
 	for(var i = 0; i < g.left.length; i++) {
+		if (!(isANumber(g.left[i]))) return false;
 		for(var j = 0; j < g.right.length; j++) {
 			if (le(g.right[j], g.left[i]) || isCFW(g.right[j], g.left[i])) return false;
 		}
 	}
+	for(var j = 0; j < g.right.length; j++)
+		if (!(isANumber(g.right[j]))) return false;
 	return true;
 }
 
@@ -245,8 +248,6 @@ function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 			}
 			arr.push(add(newGr.index,dt.index))
 		}
-		//console.log(ell);
-		//console.log(arr);
 		var newG = games[get_game_index(ell,arr)];
 		if (isANumber(newG)){
 			dt=games[get_game_index([zero.index],[dt.index])];
@@ -269,7 +270,7 @@ function fullCool(g){//returns [cooled g, g_t]
 	var trash;
 	while (!eq(bounds[0],bounds[1])){
 		var dt;
-		[g,dt,trash] = cool(g, games[one_index]);
+		[g,dt,trash] = cool(g, games[one_index], true);
 		t = sub(add(t,one_index),dt.index);
 		bounds = innerbounds(g);
 	}
