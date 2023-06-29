@@ -57,16 +57,14 @@ function isCFW(g,h){ //is confused with
 	return (!(le(g,h) || le(h,g)));
 }
 
-// take the indices as input, not the games,
-// and return the index!
-function get_game(lefts, rights) {
+function get_game_index(left_indices, right_indices) {
 	ell = [];
 	arr = [];
-	for(var i = 0; i < lefts.length; i++) {
-		ell.push(games[lefts[i]]);
+	for(var i = 0; i < left_indices.length; i++) {
+		ell.push(games[left_indices[i]]);
 	}
-	for(var i = 0; i < rights.length; i++) {
-		arr.push(games[rights[i]]);
+	for(var i = 0; i < right_indices.length; i++) {
+		arr.push(games[right_indices[i]]);
 	}
 	g = {left: ell, right: arr};
 	for(var i = 0; i < games.length; i++) {
@@ -179,29 +177,29 @@ function neg(index) {
 		ell.push(neg(g.right[i].index));
 	// console.log(ell);
 	// console.log(arr);
-	return get_game(ell,arr);
+	return get_game_index(ell,arr);
 }
 
 addition_cache = {}
-function plus(g,h){
-	if (g > h)
-		[g, h] = [h, g];
+function plus(g_index,h_index){
+	if (g_index > h_index)
+		[g_index, h_index] = [h_index, g_index];
 	var retVal;
-	if (addition_cache[g]){
-		retVal = addition_cache[g][h];
+	if (addition_cache[g_index]){
+		retVal = addition_cache[g_index][h_index];
 	} else {
-		addition_cache[g] = {}
+		addition_cache[g_index] = {}
 	}
 	if (!retVal){
-		retVal = bare_plus(g,h);
-		addition_cache[g][h] = retVal;
+		retVal = bare_plus(g_index,h_index);
+		addition_cache[g_index][h_index] = retVal;
 	}
 	return retVal
 }
-function bare_plus(g,h) {
+function bare_plus(g_index,h_index) {
 	// console.log("adding games " + g + " and " + h + " together.");
-	g = games[g];
-	h = games[h];
+	g = games[g_index];
+	h = games[h_index];
 	//console.log(g);
 	//console.log(h);
 	var ell = [];
@@ -219,7 +217,7 @@ function bare_plus(g,h) {
 		arr.push(plus(g.right[i].index,h.index));
 	for(var i = 0; i < h.right.length; i++)
 		arr.push(plus(g.index,h.right[i].index));
-	return get_game(ell,arr);
+	return get_game_index(ell,arr);
 }
 
 
@@ -236,16 +234,16 @@ function bind(name,value) {
 
 
 // takes the index of g
-function display(g) {
-	//console.log("trying to display " + g);
-	if(g in valuesToNames) {
-		return valuesToNames[g];
+function display(g_index) {
+	//console.log("trying to display " + g_index);
+	if(g_index in valuesToNames) {
+		return valuesToNames[g_index];
 	}
-	ng = neg(g);
+	ng = neg(g_index);
 	if(ng in valuesToNames) {
 		return "-" + valuesToNames[ng];
 	}
-	g = games[g];
+	g = games[g_index];
 	var s = "{";
 	if(g.left.length > 0) {
 		for(var i = 0; i < g.left.length; i++) {
@@ -266,8 +264,8 @@ function display(g) {
 	return s;
 }
 
-function forceDisplay(g) {
-	g = games[g];
+function forceDisplay(g_index) {
+	g = games[g_index];
 	var s = "{";
 	if(g.left.length > 0) {
 		for(var i = 0; i < g.left.length; i++) {

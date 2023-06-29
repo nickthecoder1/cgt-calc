@@ -351,7 +351,7 @@ function toGame(entity) {
 				lefts.push(toGame(entity.first[i]));
 			for(var i = 0; i < entity.second.length; i++)
 				rights.push(toGame(entity.second[i]));
-			return get_game(lefts,rights);
+			return get_game_index(lefts,rights);
 	}
 }
 
