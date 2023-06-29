@@ -18,61 +18,6 @@ function bare_le(g, h) {
 	return true;
 }
 
-ian_cache = {}
-function isANumber(g){
-	if (g.index){
-		if (ian_cache[g.index]) return ian_cache[g.index];
-		ian_cache[g.index] = bare_isANumber(g);
-		return ian_cache[g.index];
-	}
-	return bare_isANumber(g);
-}
-function bare_isANumber(g){
-	for(var i = 0; i < g.left.length; i++) {
-		for(var j = 0; j < g.right.length; j++) {
-			if (le(g.right[j], g.left[i]) || isCFW(g.right[j], g.left[i])) return false;
-		}
-	}
-	return true;
-}
-
-bounds_cache = {}
-function innerbounds(g){
-	if (g.index){
-		if (bounds_cache[g.index]) return bounds_cache[g.index];
-		bounds_cache[g.index] = bare_innerbounds(g);
-		return bounds_cache[g.index];
-	}
-	return bare_innerbounds(g);
-}
-function bare_innerbounds(g){
-	if (isANumber(g)) return [g,g];
-	var leftbounds = []
-	for (var i = 0; i < g.left.length; i++)
-		leftbounds.push(innerbounds(g.left[i])[1])
-	var rightbounds = []
-	for (var i = 0; i < g.right.length; i++)
-		rightbounds.push(innerbounds(g.right[i])[0])
-	return [min(leftbounds),max(rightbounds)];
-}
-
-function min(g_list){
-	if (g_list.length == 0) throw new Error('min takes in a list of length greater than 0!');
-	var retVal = g_list[0];
-	for (var i=1; i<g_list.length; i++){
-		if (le(g_list[i],retVal)) retVal = g_list[i];
-	}
-	return retVal;
-}
-function max(g_list){
-	if (g_list.length == 0) throw new Error('max takes in a list of length greater than 0!');
-	var retVal = g_list[0];
-	for (var i=1; i<g_list.length; i++){
-		if (le(retVal,g_list[i])) retVal = g_list[i];
-	}
-	return retVal;
-}
-
 comparison_cache = {}
 function le(g,h) {
 	if(g.index && h.index) {
@@ -97,6 +42,23 @@ function eq(g, h) {
 
 function isCFW(g,h){ //is confused with
 	return (!(le(g,h) || le(h,g)));
+}
+
+function min(g_list){
+	if (g_list.length == 0) throw new Error('min takes in a list of length greater than 0!');
+	var retVal = g_list[0];
+	for (var i=1; i<g_list.length; i++){
+		if (le(g_list[i],retVal)) retVal = g_list[i];
+	}
+	return retVal;
+}
+function max(g_list){
+	if (g_list.length == 0) throw new Error('max takes in a list of length greater than 0!');
+	var retVal = g_list[0];
+	for (var i=1; i<g_list.length; i++){
+		if (le(retVal,g_list[i])) retVal = g_list[i];
+	}
+	return retVal;
 }
 
 function get_game_index(left_indices, right_indices) {
@@ -206,7 +168,43 @@ function remove_reversibles(g) {
 	return false;
 }
 
+ian_cache = {}
+function isANumber(g){
+	if (g.index){
+		if (ian_cache[g.index]) return ian_cache[g.index];
+		ian_cache[g.index] = bare_isANumber(g);
+		return ian_cache[g.index];
+	}
+	return bare_isANumber(g);
+}
+function bare_isANumber(g){
+	for(var i = 0; i < g.left.length; i++) {
+		for(var j = 0; j < g.right.length; j++) {
+			if (le(g.right[j], g.left[i]) || isCFW(g.right[j], g.left[i])) return false;
+		}
+	}
+	return true;
+}
 
+bounds_cache = {}
+function innerbounds(g){
+	if (g.index){
+		if (bounds_cache[g.index]) return bounds_cache[g.index];
+		bounds_cache[g.index] = bare_innerbounds(g);
+		return bounds_cache[g.index];
+	}
+	return bare_innerbounds(g);
+}
+function bare_innerbounds(g){
+	if (isANumber(g)) return [g,g];
+	var leftbounds = []
+	for (var i = 0; i < g.left.length; i++)
+		leftbounds.push(innerbounds(g.left[i])[1])
+	var rightbounds = []
+	for (var i = 0; i < g.right.length; i++)
+		rightbounds.push(innerbounds(g.right[i])[0])
+	return [min(leftbounds),max(rightbounds)];
+}
 
 
 function neg(index) {
