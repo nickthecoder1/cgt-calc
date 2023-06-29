@@ -335,7 +335,7 @@ function attemptAddNumberAtom(str){
 function toGame(entity) {
 	switch(entity.type) {
 		case "plus":
-			return plus(toGame(entity.first),toGame(entity.second));
+			return add(toGame(entity.first),toGame(entity.second));
 		case "neg":
 			return neg(toGame(entity.value));
 		case "atom":
@@ -450,7 +450,7 @@ calculate("2\u2191 = \u2191+\u2191");		// double up definition
 calculate("\u2191\u2191 = \u2191+\u2191");	// double up definition, but it's two up arrows
 calculate("3\u2191 = 2\u2191+\u2191");		// triple up definition
 calculate("\u2193 = -\u2191");				// down definition
-// calculate("\u2191* = \u2191+*");			// up* definition
-// calculate("\u2193* = \u2193+*");			// down* definition
+calculate("\u2191* = \u2191+*");			// up* definition
+calculate("\u2193* = \u2193+*");			// down* definition
 
 

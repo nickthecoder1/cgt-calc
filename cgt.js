@@ -243,7 +243,7 @@ function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 				dt = newdt;
 				continue heatDecrement
 			}
-			arr.push(plus(newGr.index,dt.index))
+			arr.push(add(newGr.index,dt.index))
 		}
 		//console.log(ell);
 		//console.log(arr);
@@ -263,7 +263,7 @@ function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 
 //returns index
 function sub(g_index,h_index){
-	return plus(g_index,neg(h_index))
+	return add(g_index,neg(h_index))
 }
 
 //returns index
@@ -282,7 +282,7 @@ function neg(index) {
 
 addition_cache = {}
 //returns index
-function plus(g_index,h_index){
+function add(g_index,h_index){
 	if (g_index > h_index)
 		[g_index, h_index] = [h_index, g_index];
 	var retVal;
@@ -292,12 +292,12 @@ function plus(g_index,h_index){
 		addition_cache[g_index] = {}
 	}
 	if (!retVal){
-		retVal = bare_plus(g_index,h_index);
+		retVal = bare_add(g_index,h_index);
 		addition_cache[g_index][h_index] = retVal;
 	}
 	return retVal
 }
-function bare_plus(g_index,h_index) {
+function bare_add(g_index,h_index) {
 	// console.log("adding games " + g + " and " + h + " together.");
 	var g = games[g_index];
 	var h = games[h_index];
@@ -310,14 +310,14 @@ function bare_plus(g_index,h_index) {
 		//console.log("and h.index is" + h.index);
 		//console.log("coz h is ");
 		//console.log(h);
-		ell.push(plus(g.left[i].index,h.index));
+		ell.push(add(g.left[i].index,h.index));
 	}
 	for(var i = 0; i < h.left.length; i++)
-		ell.push(plus(g.index,h.left[i].index));
+		ell.push(add(g.index,h.left[i].index));
 	for(var i = 0; i < g.right.length; i++)
-		arr.push(plus(g.right[i].index,h.index));
+		arr.push(add(g.right[i].index,h.index));
 	for(var i = 0; i < h.right.length; i++)
-		arr.push(plus(g.index,h.right[i].index));
+		arr.push(add(g.index,h.right[i].index));
 	return get_game_index(ell,arr);
 }
 
@@ -388,5 +388,5 @@ function forceDisplay(g_index) {
 }
 
 
-// console.log(games[plus(up,up)]);
-// console.log(display(plus(up,up)));
+// console.log(games[add(up,up)]);
+// console.log(display(add(up,up)));
