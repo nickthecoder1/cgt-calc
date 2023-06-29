@@ -3,8 +3,6 @@
 // keep track of games by indices in the following list
 
 games = []
-comparison_cache = {}
-addition_cache = {}
 
 silent = true;
 
@@ -20,8 +18,20 @@ function bare_le(g, h) {
 	return true;
 }
 
+ian_cache = {}
+function isANumber(g){
+	if (g.index && ian_cache[g.index]) return ian_cache[g.index];
+	ian_cache[g.index] = false;
+	for(var i = 0; i < g.left.length; i++) {
+		for(var j = 0; j < g.right.length; j++) {
+			if (le(g.right[j], g.left[i]) || isCFW(g.right[j], g.left[i])) return false;
+		}
+	}
+	ian_cache[g.index] = true;
+	return true;
+}
 
-
+comparison_cache = {}
 function le(g,h) {
 	if(g.index && h.index) {
 		var d = 0;
@@ -41,6 +51,10 @@ function le(g,h) {
 
 function eq(g, h) {
 	return le(g,h) && le(h,g);
+}
+
+function isCFW(g,h){ //is confused with
+	return (!(le(g,h) || le(h,g)));
 }
 
 // take the indices as input, not the games,
@@ -167,6 +181,8 @@ function neg(index) {
 	// console.log(arr);
 	return get_game(ell,arr);
 }
+
+addition_cache = {}
 function plus(g,h){
 	if (g > h)
 		[g, h] = [h, g];
