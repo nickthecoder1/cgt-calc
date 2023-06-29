@@ -418,7 +418,16 @@ function calculate(input) {
 	return display(data);
 }
 
-// to test things: testFunc(games[toGame(parse(lex("{1|1}"))[1])])
+// to test things in the console:
+/*
+function str2game(s){return games[toGame(parse(lex(s))[1])];}
+function game2str(g){return display(g.index);}
+g = str2game("{{1|0}|-1}")
+half = str2game("1/2")
+result = cool(g, half)
+console.log(game2str(g) + " cooled by " + game2str(half) + " is " + game2str(result))
+*/
+
 calculate("0 = {|}");
 calculate("1 = {0|}");
 calculate("* = {0}");
@@ -441,7 +450,7 @@ calculate("2\u2191 = \u2191+\u2191");		// double up definition
 calculate("\u2191\u2191 = \u2191+\u2191");	// double up definition, but it's two up arrows
 calculate("3\u2191 = 2\u2191+\u2191");		// triple up definition
 calculate("\u2193 = -\u2191");				// down definition
-calculate("\u2191* = \u2191+*");			// up* definition
-calculate("\u2193* = \u2193+*");			// down* definition
+// calculate("\u2191* = \u2191+*");			// up* definition
+// calculate("\u2193* = \u2193+*");			// down* definition
 
 

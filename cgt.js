@@ -62,15 +62,15 @@ function max(g_list){
 }
 
 function get_game_index(left_indices, right_indices) {
-	ell = [];
-	arr = [];
+	var ell = [];
+	var arr = [];
 	for(var i = 0; i < left_indices.length; i++) {
 		ell.push(games[left_indices[i]]);
 	}
 	for(var i = 0; i < right_indices.length; i++) {
 		arr.push(games[right_indices[i]]);
 	}
-	g = {left: ell, right: arr};
+	var g = {left: ell, right: arr};
 	for(var i = 0; i < games.length; i++) {
 		if(eq(g,games[i])) {
 			//console.log('duplicate game' + i);
@@ -206,7 +206,67 @@ function bare_innerbounds(g){
 	return [min(leftbounds),max(rightbounds)];
 }
 
+function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
+	//cool a game by temperature t
+	if (!isANumber(t)) throw new Error('cool takes in a number for t, but t was not a number!');
+	var zero = games[get_game_index([], [])];
+	if (le(t,zero)) throw new Error('cool takes in a positive number for t, but t was not positive!');
+	var dt=get_game_index([zero.index],[]);
+	var dt = games[dt]; //the number 1
+	if (isANumber(g)) return [g,t,dt];
+	var bounds = innerbounds(g);
+	if (eq(bounds[0],bounds[1])) return [bounds[0],t,dt];
+	heatDecrement:
+	while (!eq(zero,t)){
+		var ell = [];
+		var arr = [];
+		var trash;
+		while (!le(dt,t)) dt=games[get_game_index([zero.index],[dt.index])];
+		//left array
+		for (var i = 0; i < g.left.length; i++){
+			var newGl;
+			var newdt;
+			//console.log(i)
+			[newGl, trash, newdt] = cool(g.left[i], dt);
+			if (!le(dt,newdt)){
+				dt = newdt;
+				continue heatDecrement;
+			}
+			ell.push(sub(newGl.index,dt.index))
+		}
+		//right array
+		for (var i = 0; i < g.right.length; i++){
+			var newGr;
+			var newdt;
+			[newGr, trash, newdt] = cool(g.right[i], dt);
+			if (!le(dt,newdt)){
+				dt = newdt;
+				continue heatDecrement
+			}
+			arr.push(plus(newGr.index,dt.index))
+		}
+		//console.log(ell);
+		//console.log(arr);
+		var newG = games[get_game_index(ell,arr)];
+		if (isANumber(newG)){
+			dt=games[get_game_index([zero.index],[dt.index])];
+			continue heatDecrement;
+		}
+		g = newG;
+		var bounds = innerbounds(g);
+		if (eq(bounds[0],bounds[1])) return [g,t,dt];
+		t = games[sub(t.index,dt.index)];
+		if (doDraw){/*TODO*/}
+	}
+	return [g,0,dt];
+}
 
+//returns index
+function sub(g_index,h_index){
+	return plus(g_index,neg(h_index))
+}
+
+//returns index
 function neg(index) {
 	var g = games[index];
 	var ell = [];
@@ -221,6 +281,7 @@ function neg(index) {
 }
 
 addition_cache = {}
+//returns index
 function plus(g_index,h_index){
 	if (g_index > h_index)
 		[g_index, h_index] = [h_index, g_index];
@@ -238,8 +299,8 @@ function plus(g_index,h_index){
 }
 function bare_plus(g_index,h_index) {
 	// console.log("adding games " + g + " and " + h + " together.");
-	g = games[g_index];
-	h = games[h_index];
+	var g = games[g_index];
+	var h = games[h_index];
 	//console.log(g);
 	//console.log(h);
 	var ell = [];
