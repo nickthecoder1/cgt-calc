@@ -67,6 +67,7 @@ operations:
 Additional features added by this fork:
 
 * Automatic conversion from positive integers into games
+* Added a "Cool" button to analyze hot games
 
 ## Future goals
 On the level of a basic calculator, I would like to add additional

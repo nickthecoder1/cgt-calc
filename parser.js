@@ -355,7 +355,50 @@ function toGame(entity) {
 	}
 }
 
-
+function coolOutput(input){
+	var data = parse(lex(input));
+	if(!data[0]) {
+		// parse error
+		return "Parse error: " + data[1];
+	}
+	data = data[1];
+	var value2cool;
+	if(data.type == "comparison") {
+		var first = data.first;
+		var second = data.second;
+		var op = data.operator;
+		if(op == "?") {
+			return "Can't use that operator with cooling"
+		}
+		if(op == "=") {
+			if(first.type != "atom")
+				return "Error: can't assign to non-variable " + recursivePrint(first);
+			first = first.value;
+			try {
+				second = toGame(second);
+			} catch (e) {return e;}
+			bind(first,second);
+			value2cool = second
+		}
+	} else if(data.type == "atom") {
+		data = data.value;
+		if(data in namesToValues) value2cool = (namesToValues[data]);
+		else if (attemptAddNumberAtom(data)) value2cool = (namesToValues[data]);
+		else return "Error: unrecognized variable " + data;
+	} else if(data.type == "neg" && data.value.type == "atom") {
+		data = data.value.value;
+		if(data in namesToValues) value2cool = neg(namesToValues[data]);
+		else if (attemptAddNumberAtom(data)) value2cool = (neg(namesToValues[data]));
+		else return "Error: unrecognized variable " + data;
+	} else {
+		try {
+			value2cool = toGame(data);
+		} catch (e) {return e;}
+	}
+	var [meanValue,t] = fullCool(games[value2cool]);
+	meanValue = innerbounds(meanValue)[0]
+	return display(value2cool) +" has a mean value of "+display(meanValue.index)+" and a temperature of "+display(t.index);
+}
 
 function calculate(input) {
 	var data = parse(lex(input));
@@ -422,14 +465,14 @@ function calculate(input) {
 /*
 function str2game(s){return games[toGame(parse(lex(s))[1])];}
 function game2str(g){return display(g.index);}
-g = str2game("{{1|0}|-1}")
-half = str2game("1/2")
-result = cool(g, half)
-console.log(game2str(g) + " cooled by " + game2str(half) + " is " + game2str(result))
+var g = str2game("{{1|0}|-1-1/8}")
+var [result,t] = fullCool(g)
+console.log(game2str(g) + " cooled by " + game2str(t) + " is " + game2str(result))
 */
 
 calculate("0 = {|}");
 calculate("1 = {0|}");
+calculate("20");
 calculate("* = {0}");
 calculate("*2 = {0,*}");
 calculate("*3 = {0,*,*2}");

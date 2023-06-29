@@ -21,3 +21,9 @@ function doDown() {
     inp.focus();
 }
     
+function doCool() {
+    out.value += "\n>> " + inp.value;
+    out.value += "\n" + coolOutput(inp.value);
+    inp.value = "";
+    out.scrollTop = out.scrollHeight;
+}
