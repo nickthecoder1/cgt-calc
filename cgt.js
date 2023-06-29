@@ -21,13 +21,13 @@ function bare_le(g, h) {
 ian_cache = {}
 function isANumber(g){
 	if (g.index && ian_cache[g.index]) return ian_cache[g.index];
-	ian_cache[g.index] = false;
+	if (g.index) ian_cache[g.index] = false;
 	for(var i = 0; i < g.left.length; i++) {
 		for(var j = 0; j < g.right.length; j++) {
 			if (le(g.right[j], g.left[i]) || isCFW(g.right[j], g.left[i])) return false;
 		}
 	}
-	ian_cache[g.index] = true;
+	if (g.index) ian_cache[g.index] = true;
 	return true;
 }
 
