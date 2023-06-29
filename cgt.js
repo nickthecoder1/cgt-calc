@@ -252,13 +252,28 @@ function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 			dt=games[get_game_index([zero.index],[dt.index])];
 			continue heatDecrement;
 		}
+		t = games[sub(t.index,dt.index)];
 		g = newG;
 		var bounds = innerbounds(g);
 		if (eq(bounds[0],bounds[1])) return [g,t,dt];
-		t = games[sub(t.index,dt.index)];
 		if (doDraw){/*TODO*/}
 	}
-	return [g,0,dt];
+	return [g,zero,dt];
+}
+
+function fullCool(g){//returns [cooled g, g_t]
+	var zero_index = get_game_index([], [])
+	var one_index = get_game_index([zero_index], [])
+	var t = zero_index;
+	var bounds = innerbounds(g);
+	var trash;
+	while (!eq(bounds[0],bounds[1])){
+		var dt;
+		[g,dt,trash] = cool(g, games[one_index]);
+		t = sub(add(t,one_index),dt.index);
+		bounds = innerbounds(g);
+	}
+	return [g,games[t]];
 }
 
 //returns index
@@ -344,7 +359,7 @@ function display(g_index) {
 	if(ng in valuesToNames) {
 		return "-" + valuesToNames[ng];
 	}
-	g = games[g_index];
+	var g = games[g_index];
 	var s = "{";
 	if(g.left.length > 0) {
 		for(var i = 0; i < g.left.length; i++) {
