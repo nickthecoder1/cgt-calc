@@ -6,17 +6,7 @@ games = []
 
 silent = true;
 
-function bare_le(g, h) {
-	for(var i = 0; i < g.left.length; i++) {
-		if(le(h,g.left[i]))
-			return false;
-	}
-	for(var i = 0; i < h.right.length; i++) {
-		if(le(h.right[i],g))
-			return false;
-	}
-	return true;
-}
+
 
 comparison_cache = {}
 function le(g,h) {
@@ -34,6 +24,17 @@ function le(g,h) {
 		return d;
 	}
 	return bare_le(g,h);
+}
+function bare_le(g, h) {
+	for(var i = 0; i < g.left.length; i++) {
+		if(le(h,g.left[i]))
+			return false;
+	}
+	for(var i = 0; i < h.right.length; i++) {
+		if(le(h.right[i],g))
+			return false;
+	}
+	return true;
 }
 
 function eq(g, h) {
