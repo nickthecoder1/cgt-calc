@@ -6,26 +6,35 @@ games = []
 
 silent = true;
 
-
-
-comparison_cache = {}
-function le(g,h) {
-	if(g.index && h.index) {
-		var d = 0;
-		if(comparison_cache[g.index])
-			d = comparison_cache[g.index][h.index];
-		if(d)
-			return d > 0;
-		d = bare_le(g,h);
-		if(!comparison_cache[g.index]) {
-			comparison_cache[g.index] = {};
+cached_function_count = 0
+the_cache = {}
+function cache(f, ordered=true){
+	the_cache[cached_function_count] = {};
+	cached_function_count += 1;
+	var function_cache = the_cache[cached_function_count-1];
+	return function(){
+		var x = arguments[0];
+		var y = arguments[1];
+		if ((isNaN(x) && !x.index) || (y && isNaN(y) && !y.index)) return f(x,y);
+		var xIndex = x;
+		var yIndex = y;
+		var f_cache = function_cache;
+		if (isNaN(x)) xIndex = x.index;
+		if (arguments.length == 2){
+			if (isNaN(y)) yIndex = y.index;
+			if (!ordered && xIndex < yIndex) [x,y,xIndex,yIndex] = [y,x,yIndex,xIndex];
+			if (!function_cache[yIndex]) function_cache[yIndex] = {};
+			f_cache = function_cache[yIndex];
+		} else if (arguments.length > 2) {
+			throw new Error('Can\'t call cached functions using more than 2 arguments!');
 		}
-		comparison_cache[g.index][h.index] = d;
-		return d;
+		if (f_cache[xIndex]) return f_cache[xIndex];
+		f_cache[xIndex] = f(x,y);
+		return f_cache[xIndex];
 	}
-	return bare_le(g,h);
 }
-function bare_le(g, h) {
+
+function le(g, h) {
 	for(var i = 0; i < g.left.length; i++) {
 		if(le(h,g.left[i]))
 			return false;
@@ -35,7 +44,7 @@ function bare_le(g, h) {
 			return false;
 	}
 	return true;
-}
+} le = cache(le);
 
 function eq(g, h) {
 	return le(g,h) && le(h,g);
@@ -169,16 +178,8 @@ function remove_reversibles(g) {
 	return false;
 }
 
-ian_cache = {}
+
 function isANumber(g){
-	if (g.index){
-		if (ian_cache[g.index]) return ian_cache[g.index];
-		ian_cache[g.index] = bare_isANumber(g);
-		return ian_cache[g.index];
-	}
-	return bare_isANumber(g);
-}
-function bare_isANumber(g){
 	for(var i = 0; i < g.left.length; i++) {
 		if (!(isANumber(g.left[i]))) return false;
 		for(var j = 0; j < g.right.length; j++) {
@@ -188,18 +189,18 @@ function bare_isANumber(g){
 	for(var j = 0; j < g.right.length; j++)
 		if (!(isANumber(g.right[j]))) return false;
 	return true;
-}
+} isANumber = cache(isANumber);
 
-bounds_cache = {}
+
+function isPositiveInteger(g){
+	if (g.right.length > 0) return false;
+	if (g.left.length != 1) return false;
+	if (g.left[0].left.length == 0 && g.left[0].right.length == 0) return true;
+	return isPositiveInteger(g.left[0]);
+} isPositiveInteger = cache(isPositiveInteger);
+
+
 function innerbounds(g){
-	if (g.index){
-		if (bounds_cache[g.index]) return bounds_cache[g.index];
-		bounds_cache[g.index] = bare_innerbounds(g);
-		return bounds_cache[g.index];
-	}
-	return bare_innerbounds(g);
-}
-function bare_innerbounds(g){
 	if (isANumber(g)) return [g,g];
 	var leftbounds = []
 	for (var i = 0; i < g.left.length; i++)
@@ -208,7 +209,7 @@ function bare_innerbounds(g){
 	for (var i = 0; i < g.right.length; i++)
 		rightbounds.push(innerbounds(g.right[i])[0])
 	return [min(leftbounds),max(rightbounds)];
-}
+} innerbounds = cache(innerbounds);
 
 function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 	//cool a game by temperature t
@@ -297,24 +298,8 @@ function neg(index) {
 	return get_game_index(ell,arr);
 }
 
-addition_cache = {}
 //returns index
-function add(g_index,h_index){
-	if (g_index > h_index)
-		[g_index, h_index] = [h_index, g_index];
-	var retVal;
-	if (addition_cache[g_index]){
-		retVal = addition_cache[g_index][h_index];
-	} else {
-		addition_cache[g_index] = {}
-	}
-	if (!retVal){
-		retVal = bare_add(g_index,h_index);
-		addition_cache[g_index][h_index] = retVal;
-	}
-	return retVal
-}
-function bare_add(g_index,h_index) {
+function add(g_index,h_index) {
 	// console.log("adding games " + g + " and " + h + " together.");
 	var g = games[g_index];
 	var h = games[h_index];
@@ -336,7 +321,7 @@ function bare_add(g_index,h_index) {
 	for(var i = 0; i < h.right.length; i++)
 		arr.push(add(g.index,h.right[i].index));
 	return get_game_index(ell,arr);
-}
+} add = cache(add,false)
 
 
 
