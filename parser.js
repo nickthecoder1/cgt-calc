@@ -440,7 +440,6 @@ function data2gameIndex(data){
 	return data;
 }
 function compare(input1,input2){
-	console.log(input1 + " ? " + input2)
 	var data1 = parse(lex(input1));
 	var data2 = parse(lex(input2));
 	var first_index = data2gameIndex(data1);

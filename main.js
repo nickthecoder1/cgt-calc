@@ -54,6 +54,9 @@ function operationChange() {
 	for (var id in inbetweens){
 		inbetweens[id].innerHTML = "";
 	}
+	for (var id in inps){
+		inps[id].onkeypress = function(){clickPress();}
+	}
 	inps[1].style.visibility = "hidden";
 	switch (operation){
 	case "calc":
@@ -61,6 +64,8 @@ function operationChange() {
 	case "cool":
 		break;
 	case "compare":
+		inps[0].onkeypress= function(){if (event.key == "Enter") {inps[1].focus();currentlySelectedInput = 1;}}
+		inps[1].onkeypress= function(){if (event.key == "Enter") {clickPress(event);inps[0].focus();currentlySelectedInput = 0;}}
 		inps[1].style.visibility = "visible";
 		inbetweens[0].innerHTML = "?";
 		break;
@@ -68,6 +73,25 @@ function operationChange() {
 }
 operationChange()
 
+
+function clickPress(event) {
+    if (event.key == "Enter") {
+        execute();
+    }
+}
+
+document.getElementById('operation').addEventListener('wheel', function(e) {
+    if (this.hasFocus) {
+        return;
+    }
+    if (e.deltaY < 0) {
+        this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
+    }
+    if (e.deltaY > 0) {
+        this.selectedIndex = Math.min(this.selectedIndex + 1, this.length - 1);
+    }
+    operationChange();
+});
 
 //dynamic textbox changes
 var fakeEles = [];
