@@ -6,25 +6,36 @@
   <body>
     <h1>Combinatorial Game Theory Calculator</h1>
     <textarea id="output" readonly rows=7 cols=80>Welcome!</textarea>
-    <form onsubmit="doCalc();return false;">
-      <input type="text" id="input" size=80 value="" autofocus><br>
+    <form onsubmit="execute();return false;">
+      <input type="text" id="input" value="" autofocus>
+      <span id="12" style="color:black"></span>
+      <input type="text" id="input2" value="" style="visibility: hidden;"><br/>
+      <p id="13"></p>
+      <input type="text" id="input3" value="" style="visibility: hidden;"><br/>
       <div class="grid">
-      <input type="button" value="Calculate" onclick="doCalc();">
+      <select name="operation" id="operation" onchange="operationChange();">
+        <option value="calc" selected>Calculate</option>
+        <option value="compare">?</option>
+        <option value="cool">Cool</option>
+      </select>
+      <input type="button" value="Execute" onclick="execute();">
       <input type="button" class="bigger" value="&#x2191;" onclick="doUp();">
       <input type="button" class="bigger" value="&#x2193;" onclick="doDown();">
-      <input type="button" value="Cool" onclick="doCool();">
       </div>
     </form>
     <script type="text/javascript" src="cgt.js"></script>    
     <script type="text/javascript" src="parser.js"></script>    
     <script type="text/javascript" src="main.js"></script>
-    <p><span style="color:black">Examples: </span>
+    <p><h3 style="color:black">Examples:</h3>
+      <span style="color:black">Calculate:</span>
       <br/>1 = {0|}
       <br/>* = {0} <span style="color:black">({0} represents {0|0})</span>
-      <br/>2 ? {3|} <span style="color:black">("?" compares the 2 values)</span>
-      <br/>-1 ? {-1+*,1} <span style="color:black">({-1+*,1} represents {-1+*,1|-1+*,1} which = {1|-1+*} = {1|{-1|-1}})</span>
       <br/>2+{0|1}
-      <br/>{{1|0}|-1} <span style="color:black">(type this and press the cool button to see it's mean value and temperature)</span>
+      <br/><span style="color:black">Compare:</span>
+      <br/>2 <span style="color:black">?</span> {3|}
+      <br/>-1 <span style="color:black">?</span> {-1+*,1} <span style="color:black">({-1+*,1} represents {-1+*,1|-1+*,1} which = {1|-1+*} = {1|{-1|-1}})</span>
+      <br/><span style="color:black">Cool:</span>
+      <br/>{{1|0}|-1}
     </p>
   </body>
 </html>

@@ -400,11 +400,10 @@ function coolOutput(input){
 	return display(value2cool) +" has a mean value of "+display(meanValue.index)+" and a temperature of "+display(t.index);
 }
 
-function calculate(input) {
-	var data = parse(lex(input));
+function data2gameIndex(data){
 	if(!data[0]) {
 		// parse error
-		return "Parse error: " + data[1];
+		throw new Error("Parse error: " + data[1]);
 	}
 	data = data[1];
 	if(data.type == "comparison") {
@@ -412,53 +411,64 @@ function calculate(input) {
 		var second = data.second;
 		var op = data.operator;
 		if(op == "?") {
-			try {
-				first = toGame(first);
-				second = toGame(second);
-			} catch (e) {return e;}
-			first = games[first];
-			second = games[second];
-			var fs = le(first,second);
-			var sf = le(second,first);
-			first = recursivePrint(data.first);
-			second = recursivePrint(data.second);
-			if(fs && sf)
-				return first + " = " + second;
-			if(fs && !sf)
-				return first + " < " + second;
-			if(sf && !fs)
-				return first + " > " + second;
-			return first + " || " + second;
+			throw new Error("That functionality is no longer supported. Please use compare from the drop down");
 		}
 		if(op == "=") {
 			if(first.type != "atom")
-				return "Error: can't assign to non-variable " + recursivePrint(first);
+				throw new Error("Error: can't assign to non-variable " + recursivePrint(first));
 			first = first.value;
-			try {
-				second = toGame(second);
-			} catch (e) {return e;}
+			second = toGame(second);
 			bind(first,second);
-			return first + " = " + forceDisplay(second);
+			return second;
 		}
 	}
 	if(data.type == "atom") {
 		data = data.value;
 		if(data in namesToValues)
-			return forceDisplay(namesToValues[data]);
-		if (attemptAddNumberAtom(data)) return forceDisplay(namesToValues[data]);
-		return "Error: unrecognized variable " + data;
+			return namesToValues[data];
+		if (attemptAddNumberAtom(data)) return namesToValues[data];
+		throw new Error("Error: unrecognized variable " + data);
 	}
 	if(data.type == "neg" && data.value.type == "atom") {
 		data = data.value.value;
 		if(data in namesToValues)
-			return forceDisplay(neg(namesToValues[data]));
-		if (attemptAddNumberAtom(data)) return forceDisplay(neg(namesToValues[data]));
-		return "Error: unrecognized variable " + data;
+			return neg(namesToValues[data]);
+		if (attemptAddNumberAtom(data)) return neg(namesToValues[data]);
+		throw new Error("Error: unrecognized variable " + data);
 	}
-	try {
-		data = toGame(data);
+	data = toGame(data);
+	return data;
+}
+function compare(input1,input2){
+	console.log(input1 + " ? " + input2)
+	var data1 = parse(lex(input1));
+	var data2 = parse(lex(input2));
+	var first_index = data2gameIndex(data1);
+	var second_index = data2gameIndex(data2);
+	first = games[first_index];
+	second = games[second_index];
+	var fs = le(first,second);
+	var sf = le(second,first);
+	first = recursivePrint(data1[1]);
+	second = recursivePrint(data2[1]);
+	if(fs && sf)
+		return first + " = " + second;
+	if(fs && !sf)
+		return first + " < " + second;
+	if(sf && !fs)
+		return first + " > " + second;
+	return first + " || " + second;
+}
+function calculate(input) {
+	var data = parse(lex(input));
+	var gameIndex;
+	try{
+		gameIndex = data2gameIndex(data);
 	} catch (e) {return e;}
-	return display(data);
+	data = data[1];
+	if (data.type == "comparison" && data.operator == "=") return display(gameIndex) + " = " + forceDisplay(gameIndex);
+	if (data.type == "atom" || (data.type == "neg" && data.value.type == "atom")) return forceDisplay(gameIndex)
+	return display(gameIndex)
 }
 
 // to test things in the console:
