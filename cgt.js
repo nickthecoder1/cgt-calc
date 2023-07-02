@@ -381,6 +381,10 @@ function attemptAddDiaticFractions(g_index){
 			leftDenom = Number(leftList[1]);
 			leftList = leftList[0].split("_")
 			leftNumer = Number(leftList[1])+Number(leftList[0])*leftDenom
+		} else if (left.indexOf("/")!=-1) {
+			var leftList=left.split("/")
+			leftDenom = Number(leftList[1]);
+			leftNumer = Number(leftList[0]);
 		} else {
 			[leftNumer, leftDenom] = [Number(left),1]
 		}
@@ -389,15 +393,26 @@ function attemptAddDiaticFractions(g_index){
 			rightDenom = Number(rightList[1]);
 			rightList = rightList[0].split("_")
 			rightNumer = Number(rightList[1])+Number(rightList[0])*rightDenom
+		} else if (right.indexOf("/")!=-1) {
+			var rightList=right.split("/")
+			rightDenom = Number(rightList[1]);
+			rightNumer = Number(rightList[0]);
 		} else {
 			[rightNumer, rightDenom] = [Number(right),1]
 		}
+		console.log(left)
 		var newFrac = [(leftDenom*rightNumer+rightDenom*leftNumer),leftDenom*rightDenom*2]
+		console.log(newFrac)
 		var gcd = get_gcd(newFrac[0],newFrac[1])
 		newFrac = [newFrac[0]/gcd,newFrac[1]/gcd];
 		var wholePart = (newFrac[0]-newFrac[0]%newFrac[1])/newFrac[1]
 		newFrac = [newFrac[0]%newFrac[1],newFrac[1]];
-		calculate(wholePart.toString()+ (newFrac[0] ? "_"+newFrac[0]+"/"+newFrac[1] : "") + " = {" +left+ "|"+right+"}");
+		var calcStr = "";
+		if (wholePart != 0) calcStr += wholePart.toString();
+		if (calcStr) calcStr += "_";
+		if(newFrac[0]) calcStr += newFrac[0]+"/"+newFrac[1];
+		calcStr += " = {" +left+ "|"+right+"}"
+		calculate(calcStr);
 	}
 	return true;
 }
