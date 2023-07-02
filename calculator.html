@@ -7,16 +7,19 @@
     <h1>Combinatorial Game Theory Calculator</h1>
     <textarea id="output" readonly rows=7 cols=80>Welcome!</textarea>
     <form onsubmit="execute();return false;">
-      <input type="text" id="input" value="" onkeypress="clickPress(event)" autofocus>
+      <input type="text" id="input" value="" style="position: relative;" onkeypress="clickPress(event)" autofocus>
       <span id="12" style="color:black"></span>
-      <input type="text" id="input2" value="" style="visibility: hidden;" onkeypress="clickPress(event)"><br/>
-      <p id="13"></p>
-      <input type="text" id="input3" value="" style="visibility: hidden;" onkeypress="clickPress(event)"><br/>
+      <input type="text" id="input2" value="" style="visibility: hidden; position: relative;" onkeypress="clickPress(event)">
+      <span id="23" style="color:black"></span>
+      <input type="text" id="input3" value="" style="visibility: hidden; position: relative;" onkeypress="clickPress(event)"><br/>
+      <span id="34" style="color:black"></span>
+      <input type="text" id="input4" value="" style="visibility: hidden; position: relative;" onkeypress="clickPress(event)"><br/>
       <div class="grid">
       <select name="operation" id="operation" onchange="operationChange();">
         <option value="calc" selected>Calculate</option>
-        <option value="compare">?</option>
+        <option value="compare">Compare</option>
         <option value="cool">Cool</option>
+        <option value="heat">Heat</option>
       </select>
       <input type="button" value="Execute" onclick="execute();">
       <input type="button" class="bigger" value="&#x2191;" onclick="doUp();">

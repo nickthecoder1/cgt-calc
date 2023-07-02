@@ -469,7 +469,10 @@ function calculate(input) {
 	if (data.type == "atom" || (data.type == "neg" && data.value.type == "atom")) return forceDisplay(gameIndex)
 	return display(gameIndex)
 }
-
+function heatOutput(input, temp, temp2, overheatTemp){
+	//TODO
+	return "//TODO"
+}
 // to test things in the console:
 /*
 function str2game(s){return games[toGame(parse(lex(s))[1])];}
