@@ -22,12 +22,12 @@ add things like \*6, doubleup\*, and so on:
 Values are output in canonical form.  When possible, the output is
 described using values that have been named:
 
-    >> 1+*
-    {1|1}
-    >> 1* = 1+*
-    1* = {1|1}
-    >> 1+*
-    1*
+    >> 4+*
+    {4|4}
+    >> 4* = 4+*
+    4* = {4|4}
+    >> 4+*
+    4*
     
 To get the canonical form of a named variable, you can enter its name
 
