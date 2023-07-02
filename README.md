@@ -45,6 +45,17 @@ The following special syntaxes are supported:
         >> pm1 = {1,-1}
 
 * Syntax like `{1||2|3}` for {1|{2|3}}.
+* `N` or `-N` where N is just any positive integer, will automatically be turned into the correct game representing that integer.
+* `N_N/N` where the second number is odd and less than the third number, and the third number is a power of two. For instance,
+
+        >> 2_1/2
+        {2|3}
+        >> 3_1/4
+        {3|3_1/2}
+        >> 1/16
+        {0|1/8}
+        >> {10|11}
+        10_1/2
 
 ## Features
 Currently, the only things implemented are a parser, and a very basic
@@ -58,7 +69,7 @@ operations:
 
 Additional features added by this fork:
 
-* Automatic conversion from positive integers into games
+* Automatic conversion from any diatic fraction into games and vice versa (1/2 <=> {0|1}, 2_1/2 <=> {1|2}, 3_1/4 <=> {3|3_1/2})
 * Added the ability to cool games
 * Added the ability to heat, overheat, and assymetrically heat games
 * Added the ability to analyze games' atomic weights
@@ -66,6 +77,7 @@ Additional features added by this fork:
 ## Future goals
 
 * Sometime soon, I plan on implementing a thermograph to analyze hot games. 
+* I may add an checkbox that enables/disables the automatic addition of any diatic number. I'm not completely decided on whether I want to spend the effort.
 * Similarly to the original github owner, in the much farther future I may add games like domineering or hackenbush to be able to analyze.
 I still haven't actually finished all 4 volumes of _Winning Ways for Your Mathematical Plays_, but I imagine, I'll continue adding more as I follow along with the books.
 
