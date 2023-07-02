@@ -316,18 +316,45 @@ function parse(lexdata) {
 // console.log(lexer("a bc|<||   diax? =} {"));
 
 function attemptAddNumberAtom(str){
-	// attempts to add any positive integer to the list of games
-	//return false; //uncomment this line to disable this feature
+	// attempts to add any diatic fraction to the list of games
+	// return false; //uncomment this line to disable this feature
 	for (var i = 0; i<str.length; i++){
-		if ("0123456789".indexOf(str[i]) == -1) return false;
+		if ("0123456789_/".indexOf(str[i]) == -1) return false;
 	}
-	var num = Number(str);
-	var tmpNum = num
-	while (!(tmpNum.toString() in namesToValues)) tmpNum -= 1;
-	while (tmpNum < num){
-		tmpNum += 1;
-		calculate(tmpNum.toString()+" = {"+(tmpNum-1).toString()+"|}");
+	if (str.split("_").length == 1 && str.split("/").length == 1){ //whole number
+		var num = Number(str);
+		var tmpNum = num
+		while (!(tmpNum.toString() in namesToValues)) tmpNum -= 1;
+		while (tmpNum < num){
+			tmpNum += 1;
+			calculate(tmpNum.toString()+" = {"+(tmpNum-1).toString()+"|}");
+		}
+		return true;
 	}
+	if (str.split("_").length > 2 || str.split("/").length > 2 || (str.split("_").length > 1 && str.split("/").length == 1)) return false;
+	var wholeNumber = "";
+	if (str.split("_").length == 2){
+		wholeNumber = str.split("_")[0]
+		str = str.split("_")[1]
+	}
+	var fraction = str.split("/");
+	var numerator = fraction[0];
+	var denominator = fraction[1];
+	if ((denominator/2)%1 != 0) return false; //if it's not diatic
+	if (numerator%2 == 0) return false; //if it's not reduced
+	var left = (Number(numerator)-1);
+	var right = (Number(numerator)+1);
+	var gcd = get_gcd(left,denominator);
+	left = (left/gcd).toString()+(denominator/gcd > 1 ? "/"+(denominator/gcd).toString() : "");
+	gcd = get_gcd(right,denominator);
+	right = (right/gcd).toString()+(denominator/gcd > 1 ? "/"+(denominator/gcd).toString() : "");
+	if (wholeNumber){
+		if (left === "0") left = wholeNumber;
+		else left = wholeNumber+"_"+left
+		if (right === "1") right = (Number(wholeNumber)+1).toString();
+		else right = wholeNumber+"_"+right
+	}
+	calculate((wholeNumber ? wholeNumber+"_" : "") +str+" = {"+left+"|"+right+"}");
 	return true;
 }
 
@@ -519,15 +546,6 @@ calculate("*3 = {0,*,*2}");
 calculate("*4 = {0,*,*2,*3}");
 calculate("*5 = {0,*,*2,*3,*4}");
 calculate("1/2 = {0|1}");
-calculate("3/2 = {1|2}");
-calculate("1/4 = {0|1/2}");
-calculate("1/8 = {0|1/4}");
-calculate("1/16 = {0|1/8}");
-calculate("1/32 = {0|1/16}");
-calculate("3/4 = 1/4+1/2");
-calculate("3/8 = 1/8+1/4");
-calculate("5/8 = 1/2+1/8");
-calculate("7/8 = 1-1/8");
 calculate("\u2191 = {0|*}");				// up definition
 calculate("2\u2191 = \u2191+\u2191");		// double up definition
 calculate("\u2191\u2191 = \u2191+\u2191");	// double up definition, but it's two up arrows

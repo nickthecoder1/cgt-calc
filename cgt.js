@@ -357,17 +357,59 @@ function bind(name,value) {
 	valuesToNames[value] = name;
 }
 
+function get_gcd(x, y) {
+	x = Math.abs(x);
+	y = Math.abs(y);
+	while(y) [x,y] = [y,x%y];
+	return x;
+}
 
-
+function attemptAddDiaticFractions(g_index){
+	//return false; //uncomment this to disable this feature
+	if (!isANumber(games[g_index])) return false;
+	var zero = games[get_game_index([], [])];
+	if (le(games[g_index],zero)) return false;
+	if (isPositiveInteger(games[g_index])){
+		var n = Number(display(games[g_index].left[0].index))+1
+		calculate(n.toString()+" = {"+(n-1).toString()+"|}")
+	} else {
+		var left = display(games[g_index].left[0].index);
+		var right = display(games[g_index].right[0].index);
+		var leftNumer, leftDenom, rightNumer, rightDenom;
+		if (left.indexOf("_")!=-1){
+			var leftList=left.split("/")
+			leftDenom = Number(leftList[1]);
+			leftList = leftList[0].split("_")
+			leftNumer = Number(leftList[1])+Number(leftList[0])*leftDenom
+		} else {
+			[leftNumer, leftDenom] = [Number(left),1]
+		}
+		if (right.indexOf("_")!=-1){
+			var rightList=right.split("/")
+			rightDenom = Number(rightList[1]);
+			rightList = rightList[0].split("_")
+			rightNumer = Number(rightList[1])+Number(rightList[0])*rightDenom
+		} else {
+			[rightNumer, rightDenom] = [Number(right),1]
+		}
+		var newFrac = [(leftDenom*rightNumer+rightDenom*leftNumer),leftDenom*rightDenom*2]
+		var gcd = get_gcd(newFrac[0],newFrac[1])
+		newFrac = [newFrac[0]/gcd,newFrac[1]/gcd];
+		var wholePart = (newFrac[0]-newFrac[0]%newFrac[1])/newFrac[1]
+		newFrac = [newFrac[0]%newFrac[1],newFrac[1]];
+		calculate(wholePart.toString()+ (newFrac[0] ? "_"+newFrac[0]+"/"+newFrac[1] : "") + " = {" +left+ "|"+right+"}");
+	}
+	return true;
+}
 
 // takes the index of g
 function display(g_index) {
 	//console.log("trying to display " + g_index);
-	if(g_index in valuesToNames) {
+	if(g_index in valuesToNames || attemptAddDiaticFractions(g_index)) {
 		return valuesToNames[g_index];
 	}
 	ng = neg(g_index);
-	if(ng in valuesToNames) {
+	if(ng in valuesToNames || attemptAddDiaticFractions(ng)) {
 		return "-" + valuesToNames[ng];
 	}
 	var g = games[g_index];
