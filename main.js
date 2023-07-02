@@ -28,7 +28,7 @@ function execute(){
 		output = coolOutput(inps[0].value);
 		break;
 	case("heat"):
-		input = inps[2].value;
+		input = heatInput(inps[2].value,inps[1].value,inps[0].value,inps[3].value);
 		output = heatOutput(inps[2].value,inps[1].value,inps[0].value,inps[3].value);
 		break;
 	}

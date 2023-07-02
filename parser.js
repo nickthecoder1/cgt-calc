@@ -434,12 +434,64 @@ function calculate(input) {
 	if (data.type == "atom" || (data.type == "neg" && data.value.type == "atom")) return forceDisplay(gameIndex)
 	return display(gameIndex)
 }
-function heatOutput(input, temp, temp2, overheatTemp){
+function getHeatGames(input, temp, leftTemp, overheatTemp){
+	var gameIndex;
+	var tempgameIndex;
+	var leftTempGameIndex;
+	var overheatgameIndex;
+	try{
+		gameIndex = data2gameIndex(parse(lex(input)));
+		tempgameIndex = data2gameIndex(parse(lex(temp)));
+		if (leftTemp !== "")
+			leftTempGameIndex = data2gameIndex(parse(lex(leftTemp)));
+		else
+			leftTempGameIndex = -1
+		if (overheatTemp !== "")
+			overheatgameIndex = data2gameIndex(parse(lex(overheatTemp)));
+		else
+			overheatgameIndex = -1
+	} catch (e) {return e;}
+	if (leftTempGameIndex == -1)
+		leftTempGame = null;
+	else
+		leftTempGame = games[leftTempGameIndex]
+	if (overheatgameIndex == -1)
+		overheatgame = null;
+	else
+		overheatgame = games[overheatgameIndex]
+	return [games[gameIndex],games[tempgameIndex],leftTempGame,overheatgame]
+}
+function heatInput(input, temp, leftTemp, overheatTemp){
+	var result = leftTemp + "/" + temp + "\n>> "
+	for (var i=0; i<leftTemp.length; i++)
+		result += " "
+	result += "|"
+	for (var i=0; i<Math.max(temp.length, overheatTemp.length); i++)
+		result += " "
+	result += "(" + input + ")\n>> ";
+	for (var i=0; i<leftTemp.length; i++)
+		result += " "
+	result += "/" + overheatTemp;
+	return result;
+}
+
+function heatOutput(input, temp, leftTemp, overheatTemp){
 	if (input === "") return "Error: No number given to heat (far right box)!";
 	if (temp === "") return "Error: No temperature given (top middle box)!";
-	//heat(g,t,tL,overheat_t);
-	//TODO
-	return "//TODO"
+	var [inputGame, tGame, ltGame, otGame] = getHeatGames(input, temp, leftTemp, overheatTemp);
+	[input, temp, leftTemp, overheatTemp] = [display(inputGame.index),display(tGame.index),ltGame ? display(ltGame.index) : "",otGame ? display(otGame.index) : ""];
+	var result = leftTemp + "/" + temp + "\n"
+	for (var i=0; i<leftTemp.length; i++)
+		result += " "
+	result += "|"
+	for (var i=0; i<Math.max(temp.length, overheatTemp.length); i++)
+		result += " "
+	result += "(" + input + ") = " + display(heat(inputGame, tGame, ltGame, otGame).index) + "\n";
+	for (var i=0; i<leftTemp.length; i++)
+		result += " "
+	result += "/" + overheatTemp;
+
+	return result;
 }
 // to test things in the console:
 /*
