@@ -356,48 +356,13 @@ function toGame(entity) {
 }
 
 function coolOutput(input){
-	var data = parse(lex(input));
-	if(!data[0]) {
-		// parse error
-		return "Parse error: " + data[1];
-	}
-	data = data[1];
-	var value2cool;
-	if(data.type == "comparison") {
-		var first = data.first;
-		var second = data.second;
-		var op = data.operator;
-		if(op == "?") {
-			return "Can't use that operator with cooling"
-		}
-		if(op == "=") {
-			if(first.type != "atom")
-				return "Error: can't assign to non-variable " + recursivePrint(first);
-			first = first.value;
-			try {
-				second = toGame(second);
-			} catch (e) {return e;}
-			bind(first,second);
-			value2cool = second
-		}
-	} else if(data.type == "atom") {
-		data = data.value;
-		if(data in namesToValues) value2cool = (namesToValues[data]);
-		else if (attemptAddNumberAtom(data)) value2cool = (namesToValues[data]);
-		else return "Error: unrecognized variable " + data;
-	} else if(data.type == "neg" && data.value.type == "atom") {
-		data = data.value.value;
-		if(data in namesToValues) value2cool = neg(namesToValues[data]);
-		else if (attemptAddNumberAtom(data)) value2cool = (neg(namesToValues[data]));
-		else return "Error: unrecognized variable " + data;
-	} else {
-		try {
-			value2cool = toGame(data);
-		} catch (e) {return e;}
-	}
-	var [meanValue,t] = fullCool(games[value2cool]);
+	var gameIndex;
+	try{
+		gameIndex = data2gameIndex(parse(lex(input)));
+	} catch (e) {return e;}
+	var [meanValue,t] = fullCool(games[gameIndex]);
 	meanValue = innerbounds(meanValue)[0]
-	return display(value2cool) +" has a mean value of "+display(meanValue.index)+" and a temperature of "+display(t.index);
+	return display(gameIndex) +" has a mean value of "+display(meanValue.index)+" and a temperature of "+display(t.index);
 }
 
 function data2gameIndex(data){
@@ -470,6 +435,9 @@ function calculate(input) {
 	return display(gameIndex)
 }
 function heatOutput(input, temp, temp2, overheatTemp){
+	if (input === "") return "Error: No number given to heat (far right box)!";
+	if (temp === "") return "Error: No temperature given (top middle box)!";
+	//heat(g,t,tL,overheat_t);
 	//TODO
 	return "//TODO"
 }
