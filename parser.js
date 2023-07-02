@@ -315,6 +315,7 @@ function parse(lexdata) {
 
 // console.log(lexer("a bc|<||   diax? =} {"));
 
+
 function attemptAddNumberAtom(str){
 	// attempts to add any diatic fraction to the list of games
 	// return false; //uncomment this line to disable this feature
@@ -525,6 +526,17 @@ function heatOutput(input, temp, leftTemp, overheatTemp){
 
 	return result;
 }
+
+function uppityOutput(input){
+	var gameIndex;
+	try{
+		gameIndex = data2gameIndex(parse(lex(input)));
+	} catch (e) {return e;}
+	var uppitiness = get_uppitiness(games[gameIndex]);
+	if (uppitiness == -1) return display(gameIndex)+" is too far from zero to have an atomic weight"
+	return display(gameIndex)+" has atomic weight "+display(uppitiness.index);
+}
+
 // to test things in the console:
 /*
 function str2game(s){return games[toGame(parse(lex(s))[1])];}

@@ -303,6 +303,74 @@ function fullCool(g){//returns [cooled g, g_t]
 	return [g,games[t]];
 }
 
+function get_farstar(g){
+	var zero_index = get_game_index([], []);
+	var star_indices = [zero_index]
+	var farstar;
+	mainWhile:
+	while (true){
+		farstar = games[get_game_index(star_indices,star_indices)];
+		for (var i = 0; i<g.left.length; i+=1){
+			if (eq(g.left[i],farstar)){
+				star_indices.push(farstar.index);
+				continue mainWhile;
+			}
+		}
+		for (var i = 0; i<g.right.length;i+=1){
+			if (eq(g.right[i],farstar)){
+				star_indices.push(farstar.index);
+				continue mainWhile;
+			}
+		}
+		break mainWhile;
+	}
+	if (eq(g,farstar)){
+		star_indices.push(farstar.index);
+		farstar = games[get_game_index(star_indices,star_indices)]
+	}
+	return farstar
+}
+function ltcfw(g,h){//less than or confused with
+	return ((le(g,h) && !eq(g,h)) || isCFW(g,h));
+}
+function get_uppitiness(g){
+	var zero = games[get_game_index([], [])];
+	if (eq(g,zero)) return zero;
+	if (isANumber(g)) return -1;
+	var farstar = get_farstar(g);
+	var one = games[get_game_index([zero.index], [])];
+	var two = games[get_game_index([one.index], [])];
+	var ell = [];
+	for (var i=0; i<g.left.length; i++)
+		ell.push(sub(get_uppitiness(g.left[i]).index,two.index))
+	var arr = [];
+	for (var i=0; i<g.right.length; i++)
+		arr.push(add(get_uppitiness(g.right[i]).index,two.index))
+	var uppitiness = games[get_game_index(ell,arr)];
+	if (isPositiveInteger(uppitiness) || isPositiveInteger(games[neg(uppitiness.index)]) || eq(uppitiness,zero)){ //if it's an integer
+		if (le(farstar,g)){
+			//find the largest integer that is less than or confused with all (G_r+2)
+			uppitiness = zero;
+			while (ltcfw(uppitiness,games[arr[0]])) uppitiness = games[add(uppitiness.index,one.index)];
+			while (!ltcfw(uppitiness,games[arr[0]])) uppitiness = games[sub(uppitiness.index,one.index)];
+			for (var i=1; i<arr.length; i++){
+				while (ltcfw(uppitiness,games[arr[i]])) uppitiness = games[add(uppitiness.index,one.index)];
+				uppitiness = games[sub(uppitiness.index,one.index)];
+			}
+		} else if (le(g,farstar)){
+			//find the smallest integer that is greater than or confused with all (G_l-2)
+			uppitiness = zero;
+			while (ltcfw(games[ell[0]],uppitiness)) uppitiness = games[sub(uppitiness.index,one.index)];
+			while (!ltcfw(games[ell[0]],uppitiness)) uppitiness = games[add(uppitiness.index,one.index)];
+			for (var i=1; i<ell.length; i++){
+				while (ltcfw(games[ell[i]],uppitiness)) uppitiness = games[sub(uppitiness.index,one.index)];
+				uppitiness = games[add(uppitiness.index,one.index)];
+			}
+		}
+	}
+	return uppitiness;
+} get_uppitiness = cache(get_uppitiness,false)
+
 //returns index
 function sub(g_index,h_index){
 	return add(g_index,neg(h_index))

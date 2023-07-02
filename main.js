@@ -36,6 +36,10 @@ function execute(){
 		output = heatOutput(inps[2].value,inps[1].value,inps[0].value,inps[3].value);
 		inps[2].value = "";
 		break;
+	case ("uppitiness"):
+		input = inps[0].value;
+		output = uppityOutput(inps[0].value);
+		break;
 	}
 	out.value += "\n>> " + input;
 	out.value += "\n" + output;
@@ -77,6 +81,8 @@ function operationChange() {
 	inps[0].style.visibility = "visible";
 	switch (operation){
 	case "calc":
+		break;
+	case "uppitiness":
 		break;
 	case "cool":
 		inps[0].onkeypress= function(event){if (event.key == "Enter") {inps[1].focus();currentlySelectedInput = 1;}}
