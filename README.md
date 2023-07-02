@@ -79,6 +79,7 @@ Additional features added by this fork:
 * Sometime soon, I plan on implementing a thermograph to analyze hot games. 
 * I may add an checkbox that enables/disables the automatic addition of any diatic number. I'm not completely decided on whether I want to spend the effort.
 * Similarly to the original github owner, in the much farther future I may add games like domineering or hackenbush to be able to analyze.
+
 I still haven't actually finished all 4 volumes of _Winning Ways for Your Mathematical Plays_, but I imagine, I'll continue adding more as I follow along with the books.
 
 
