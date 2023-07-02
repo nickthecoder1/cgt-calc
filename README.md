@@ -34,14 +34,6 @@ To get the canonical form of a named variable, you can enter its name
     >> 1*
     {1|1}
 
-To compare two games, separate them with ?
-
-    >> * = {0|0}
-    >> up = {0|*}
-    >> 1 ? up
-    1 > up
-    >> up ? *
-    up || *
 
 The following special syntaxes are supported:
 
@@ -67,7 +59,9 @@ operations:
 Additional features added by this fork:
 
 * Automatic conversion from positive integers into games
-* Added a "Cool" button to analyze hot games
+* Added the ability to cool games
+* Added the ability to heat, overheat, and assymetrically heat games
+* Added the ability to analyze games' atomic weights
 
 ## Future goals
 On the level of a basic calculator, I would like to add additional

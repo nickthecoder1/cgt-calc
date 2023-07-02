@@ -30,16 +30,13 @@
     <script type="text/javascript" src="cgt.js"></script>    
     <script type="text/javascript" src="parser.js"></script>    
     <script type="text/javascript" src="main.js"></script>
-    <p><h3 style="color:black">Examples:</h3>
-      <span style="color:black">Calculate:</span>
+    <p><h3 style="color:black">Examples of expressions you can enter:</h3>
       <br/>1 = {0|}
-      <br/>* = {0} <span style="color:black">({0} represents {0|0})</span>
-      <br/>2+{0|1}
-      <br/><span style="color:black">Compare:</span>
-      <br/>2 <span style="color:black">?</span> {3|}
-      <br/>-1 <span style="color:black">?</span> {-1+*,1} <span style="color:black">({-1+*,1} represents {-1+*,1|-1+*,1} which = {1|-1+*} = {1|{-1|-1}})</span>
-      <br/><span style="color:black">Cool:</span>
-      <br/>{{1|0}|-1}
+      <br/>*2 = {0,*} <span style="color:black">({0,*} represents {0,*|0,*})</span>
+      <br/>5* = 5+* <span style="color:black">(you can assign variables in any field, and that field will just use that value)</span>
+      <br/>2+1/2-10+*  <span style="color:black">(any integer or simplified diatic fraction will be converted into a game)</span>
+      <br/>20_3/4 <span style="color:black">(any integer followed by "_" and a simplified diatic fraction will be converted into a game)</span>
+      <br/>{0||0|-1} <span style="color:black">(this represents tiny 1, or {0|{0|-1}})</span>
     </p>
   </body>
 </html>
