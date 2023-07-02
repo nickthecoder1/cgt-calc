@@ -2,7 +2,7 @@
 This is a tool for performing calculations in combinatorial game
 theory.  It is written in JavaScript as a client-side web application.
 Some version is posted
-[on my website](https://math.berkeley.edu/~willij/calc/calculator.html)
+[on the original git owner's website](https://math.berkeley.edu/~willij/calc/calculator.html)
 The current version is extremely preliminary.
 
 ## Usage
@@ -64,21 +64,11 @@ Additional features added by this fork:
 * Added the ability to analyze games' atomic weights
 
 ## Future goals
-On the level of a basic calculator, I would like to add additional
-operations, such as heating and cooling, mean values, atomic weights,
-Norton multiplication, left and right sides, and Conway multiplication for
-numbers and nimbers.
 
-I would also like to have something a bit more interactive, like Sage,
-rather than the terminal emulator that I currently have.
+* Sometime soon, I plan on implementing a thermograph to analyze hot games. 
+* Similarly to the original github owner, in the much farther future I may add games like domineering or hackenbush to be able to analyze.
+I still haven't actually finished all 4 volumes of _Winning Ways for Your Mathematical Plays_, but I imagine, I'll continue adding more as I follow along with the books.
 
-In the long run, I would like to use HTML5 canvases to allow the user
-to edit positions in Domineering and other such games, calculating
-values on the fly.
-
-Internally, the basic algorithms need to be improved.  Addition and
-subtraction aren't memoized.  The parser is done with recursive
-descent, which works well enough, but is difficult to alter.
 
 ## Background on CGT
 Combinatorial game theory is the study of two player games of perfect
