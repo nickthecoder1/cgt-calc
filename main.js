@@ -22,13 +22,13 @@ function execute(){
 		break;
 	case("compare"):
 		input = inps[0].value + " ? " + inps[1].value;
-		output = compare(inps[0].value,inps[1].value);
+		output = compareOutput(inps[0].value,inps[1].value);
 		inps[0].value = "";
 		inps[1].value = "";
 		break;
 	case("cool"):
-		input = inps[0].value;
-		output = coolOutput(inps[0].value);
+		input = inps[0].value + (inps[1].value !== "" ? " cooled by "+inps[1].value : " cooled all the way");
+		output = coolOutput(inps[0].value,inps[1].value);
 		inps[0].value = "";
 		break;
 	case("heat"):
@@ -60,7 +60,7 @@ function doDown() {
 
 function operationChange() {
 	var operation = getOperation();
-	inbetweens = [document.getElementById('12')];
+	inbetweens = [document.getElementById('12'),document.getElementById('23')];
 	for (var id in inbetweens){
 		inbetweens[id].innerHTML = "";
 		inbetweens[id].style.fontSizeAdjust = "initial"
@@ -79,6 +79,11 @@ function operationChange() {
 	case "calc":
 		break;
 	case "cool":
+		inps[0].onkeypress= function(event){if (event.key == "Enter") {inps[1].focus();currentlySelectedInput = 1;}}
+		inps[1].onkeypress= function(event){if (event.key == "Enter") {clickPress(event);inps[0].focus();currentlySelectedInput = 0;}}
+		inps[1].style.visibility = "visible";
+		inbetweens[0].innerHTML = "cooled by";
+		inbetweens[1].innerHTML = "(leave blank to cool all the way)";
 		break;
 	case "compare":
 		inps[0].onkeypress= function(event){if (event.key == "Enter") {inps[1].focus();currentlySelectedInput = 1;}}

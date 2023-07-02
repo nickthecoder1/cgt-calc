@@ -355,14 +355,19 @@ function toGame(entity) {
 	}
 }
 
-function coolOutput(input){
-	var gameIndex;
+function coolOutput(input, temp){
+	var gameIndex, tempIndex;
 	try{
 		gameIndex = data2gameIndex(parse(lex(input)));
+		if (temp !== "") tempIndex = data2gameIndex(parse(lex(temp)));
 	} catch (e) {return e;}
-	var [meanValue,t] = fullCool(games[gameIndex]);
-	meanValue = innerbounds(meanValue)[0]
-	return display(gameIndex) +" has a mean value of "+display(meanValue.index)+" and a temperature of "+display(t.index);
+	var cooledValue,t;
+	if (temp !== "")
+		[cooledValue,t] = cool(games[gameIndex], games[tempIndex]);
+	else
+		[cooledValue,t] = fullCool(games[gameIndex]);
+	meanValue = innerbounds(cooledValue)[0]
+	return display(gameIndex)+" cooled by "+display(t.index)+" is "+display(cooledValue.index)+" and has a mean value of "+display(meanValue.index);
 }
 
 function data2gameIndex(data){
@@ -404,7 +409,7 @@ function data2gameIndex(data){
 	data = toGame(data);
 	return data;
 }
-function compare(input1,input2){
+function compareOutput(input1,input2){
 	var data1 = parse(lex(input1));
 	var data2 = parse(lex(input2));
 	var first_index = data2gameIndex(data1);
