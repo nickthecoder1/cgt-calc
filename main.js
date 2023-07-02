@@ -18,24 +18,28 @@ function execute(){
 	case("calc"):
 		input = inps[0].value;
 		output = calculate(inps[0].value);
+		inps[0].value = "";
 		break;
 	case("compare"):
 		input = inps[0].value + " ? " + inps[1].value;
 		output = compare(inps[0].value,inps[1].value);
+		inps[0].value = "";
+		inps[1].value = "";
 		break;
 	case("cool"):
 		input = inps[0].value;
 		output = coolOutput(inps[0].value);
+		inps[0].value = "";
 		break;
 	case("heat"):
 		input = heatInput(inps[2].value,inps[1].value,inps[0].value,inps[3].value);
 		output = heatOutput(inps[2].value,inps[1].value,inps[0].value,inps[3].value);
+		inps[2].value = "";
 		break;
 	}
 	out.value += "\n>> " + input;
 	out.value += "\n" + output;
 	for (id in inps){
-		inps[id].value = "";
 		setWidths[id]();
 	}
 	out.scrollTop = out.scrollHeight;
