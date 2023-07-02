@@ -39,6 +39,7 @@ function execute(){
 	case ("uppitiness"):
 		input = inps[0].value;
 		output = uppityOutput(inps[0].value);
+		inps[0].value = "";
 		break;
 	}
 	out.value += "\n>> " + input;

@@ -336,7 +336,7 @@ function ltcfw(g,h){//less than or confused with
 function get_uppitiness(g){
 	var zero = games[get_game_index([], [])];
 	if (eq(g,zero)) return zero;
-	if (isANumber(g)) return -1;
+	if (isANumber(g)) throw new Error("NO INTEGERS ALLOWED")
 	var farstar = get_farstar(g);
 	var one = games[get_game_index([zero.index], [])];
 	var two = games[get_game_index([one.index], [])];

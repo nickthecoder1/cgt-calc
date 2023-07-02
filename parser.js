@@ -532,8 +532,11 @@ function uppityOutput(input){
 	try{
 		gameIndex = data2gameIndex(parse(lex(input)));
 	} catch (e) {return e;}
-	var uppitiness = get_uppitiness(games[gameIndex]);
-	if (uppitiness == -1) return display(gameIndex)+" is too far from zero to have an atomic weight"
+	try{
+		var uppitiness = get_uppitiness(games[gameIndex]);
+	} catch (e) {
+		return display(gameIndex)+" cannot have atomic weight, because it, or one of its components, is too far from zero"
+	}
 	return display(gameIndex)+" has atomic weight "+display(uppitiness.index);
 }
 
