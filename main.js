@@ -44,11 +44,13 @@ function execute(){
 function doUp() {
 	inps[currentlySelectedInput].value += "\u2191";
 	inps[currentlySelectedInput].focus();
+	inps[currentlySelectedInput].oninput();
 }
 
 function doDown() {
 	inps[currentlySelectedInput].value += "\u2193";
 	inps[currentlySelectedInput].focus();
+	inps[currentlySelectedInput].oninput();
 }
 
 

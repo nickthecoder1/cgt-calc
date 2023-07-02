@@ -226,14 +226,15 @@ function heat(g,t,tL,overheat_at){
 		}
 	}
 	if (!tL) tL = t;
-	ell = [];
+	var ell = [];
 	for (var i=0; i<g.left.length; i++)
 		ell.push(add(heat(g.left[i],t,tL,overheat_at).index,t.index))
-	arr = [];
+	var arr = [];
 	for (var i=0; i<g.right.length; i++)
 		arr.push(sub(heat(g.right[i],t,tL,overheat_at).index,tL.index))
 	return games[get_game_index(ell, arr)];
 }
+
 function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 	//cool a game by temperature t
 	if (!isANumber(t)) throw new Error('cool takes in a number for t, but t was not a number!');
