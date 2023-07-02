@@ -6,15 +6,15 @@ Some version is posted
 The current version is extremely preliminary.
 
 ## Usage
-Currently, the tool reads in expressions from the user and evaluates
-them.  Variables can be assigned by writing things like
+Currently, the tool reads in expressions from the provided input boxes, evaluates
+them, and correspondingly does whatever operation is selected from the dropdown. 
+Variables can be assigned by writing things like
 
     >> x = {0| }
     >> y = {0|}-{1|x}
 
-Currently, the calculator only knows about positive integers, and a few
-other games, so you must manually
-add things like \*6, doubleup\*, and so on:
+Currently, the calculator knows about simplified diatic fractions, up, down, some stars, and a few other games,
+but you must manually add anything else like \*6, doubleup\*, and so on:
 
     >> *6 = {0,*,*2,*3,*4,*5}
     >> doubleup* = {0|*} + {0|*} + *
