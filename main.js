@@ -68,6 +68,7 @@ function operationChange() {
 	for (var id in inps){
 		inps[id].onkeypress = function(event){clickPress(event);}
 		inps[id].style.visibility = "hidden";
+		inps[id].value = "";
 		//console.log(id)
 		inps[id].oninput = setWidths[id]
 		inps[id].style.top = 0;
