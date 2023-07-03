@@ -1,4 +1,7 @@
-# cgt-calc, v0
+# cgt-calc
+
+[Click here to see the github page of this repo](https://nickthecoder1.github.io/cgt-calc/)
+
 This is a tool for performing calculations in combinatorial game
 theory.  It is written in JavaScript as a client-side web application.
 Some version is posted
