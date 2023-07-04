@@ -412,12 +412,14 @@ function coolOutput(input, temp){
 		if (temp !== "") tempIndex = data2gameIndex(parse(lex(temp)));
 	} catch (e) {return e;}
 	var cooledValue,t;
-	if (temp !== "")
-		[cooledValue,t] = cool(games[gameIndex], games[tempIndex]);
-	else
-		[cooledValue,t] = fullCool(games[gameIndex]);
-	meanValue = innerbounds(cooledValue)[0]
-	return display(gameIndex)+" cooled by "+display(t.index)+" is "+display(cooledValue.index)+" and has a mean value of "+display(meanValue.index);
+	try{
+		if (temp !== "")
+			[cooledValue,t] = cool(games[gameIndex], games[tempIndex]);
+		else
+			[cooledValue,t] = fullCool(games[gameIndex]);
+		meanValue = innerbounds(cooledValue)[0]
+		return display(gameIndex)+" cooled by "+display(t.index)+" is "+display(cooledValue.index)+" and has a mean value of "+display(meanValue.index);
+	} catch (e){return e;}
 }
 
 function data2gameIndex(data){

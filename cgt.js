@@ -236,8 +236,8 @@ function heat(g,t,tL,overheat_at){
 
 function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 	//cool a game by temperature t
-	if (!isANumber(t)) throw new Error('cool takes in a number for t, but t was not a number!');
-	if (le(t,zero)) throw new Error('cool takes in a positive number for t, but t was not positive!');
+	if (!isANumber(t)) throw new Error('Temperature is not a number!');
+	if (le(t,zero)) throw new Error('Temperature is negative!');
 	var dt=get_game_index([zero.index],[]);
 	var dt = games[dt]; //the number 1
 	if (isANumber(g)) return [g,t,dt];
