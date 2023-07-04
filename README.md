@@ -80,6 +80,7 @@ Additional features added by this fork:
 ## Future goals
 
 * Sometime soon, I plan on implementing a thermograph to analyze hot games. 
+* Norton multiplication. Not exactly sure how I'll add the multiplication symbol, seeing as * is used for star. I might add a dot button representing multiplication, similar to up and down.  
 * I may add an checkbox that enables/disables the automatic addition of any diatic number. I'm not completely decided on whether I want to spend the effort.
 * Similarly to the original github owner, in the much farther future I may add games like domineering or hackenbush to be able to analyze.
 
