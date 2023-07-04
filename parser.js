@@ -568,5 +568,7 @@ calculate("3\u2191 = 2\u2191+\u2191");		// triple up definition
 calculate("\u2193 = -\u2191");				// down definition
 calculate("\u2191* = \u2191+*");			// up* definition
 calculate("\u2193* = \u2193+*");			// down* definition
+zero = games[get_game_index([], [])];
+one = games[get_game_index([zero.index], [])];
 
 

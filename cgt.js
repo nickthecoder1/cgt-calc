@@ -213,7 +213,6 @@ function innerbounds(g){
 
 
 function heat(g,t,tL,overheat_at){
-	var zero = games[get_game_index([], [])];
 	if (isANumber(g)){
 		if (!overheat_at) return g;
 		if (isPositiveInteger(g)){
@@ -238,7 +237,6 @@ function heat(g,t,tL,overheat_at){
 function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 	//cool a game by temperature t
 	if (!isANumber(t)) throw new Error('cool takes in a number for t, but t was not a number!');
-	var zero = games[get_game_index([], [])];
 	if (le(t,zero)) throw new Error('cool takes in a positive number for t, but t was not positive!');
 	var dt=get_game_index([zero.index],[]);
 	var dt = games[dt]; //the number 1
@@ -289,23 +287,20 @@ function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 }
 
 function fullCool(g){//returns [cooled g, g_t]
-	var zero_index = get_game_index([], [])
-	var one_index = get_game_index([zero_index], [])
-	var t = zero_index;
+	var t = zero.index;
 	var bounds = innerbounds(g);
 	var trash;
 	while (!eq(bounds[0],bounds[1])){
 		var dt;
-		[g,dt,trash] = cool(g, games[one_index], true);
-		t = sub(add(t,one_index),dt.index);
+		[g,dt,trash] = cool(g, games[one.index], true);
+		t = sub(add(t,one.index),dt.index);
 		bounds = innerbounds(g);
 	}
 	return [g,games[t]];
 }
 
 function get_farstar(g){
-	var zero_index = get_game_index([], []);
-	var star_indices = [zero_index]
+	var star_indices = [zero.index]
 	var farstar;
 	mainWhile:
 	while (true){
@@ -334,11 +329,9 @@ function ltcfw(g,h){//less than or confused with
 	return ((le(g,h) && !eq(g,h)) || isCFW(g,h));
 }
 function get_uppitiness(g){
-	var zero = games[get_game_index([], [])];
 	if (eq(g,zero)) return zero;
 	if (isANumber(g)) throw new Error("NO INTEGERS ALLOWED")
 	var farstar = get_farstar(g);
-	var one = games[get_game_index([zero.index], [])];
 	var two = games[get_game_index([one.index], [])];
 	var ell = [];
 	for (var i=0; i<g.left.length; i++)
@@ -370,6 +363,34 @@ function get_uppitiness(g){
 	}
 	return uppitiness;
 } get_uppitiness = cache(get_uppitiness,false)
+
+function multiply(g,u){
+	if (eq(g,zero) || eq(u,zero))
+		return zero;
+	if (le(g,zero))
+		return games[neg(multiply(games[neg(g.index)],u).index)];
+	if (isPositiveInteger(g))
+		return games[add(u.index,multiply(games[sub(g.index,one.index)],u).index)];
+
+	var I = {left:[],right:[]};
+	for (var i=0; i<u.left.length; i++)
+		I.left.push(games[sub(u.left[i].index,u.index)])
+	for (var i=0; i<u.right.length; i++)
+		I.left.push(games[sub(u.index,u.right[i].index)])
+	remove_dominated_options(I);
+	I = I.left;
+	var ell = [];
+	var arr = [];
+	for (var j=0; j<I.length; j++){
+		UplusI = games[add(u.index,I[j].index)];
+		for (var i=0; i<g.left.length; i++)
+			ell.push(add(multiply(g.left[i],u).index,UplusI.index))
+		for (var i=0; i<g.right.length; i++)
+			arr.push(sub(multiply(g.right[i],u).index,UplusI.index))
+	}
+	return games[get_game_index(ell,arr)];
+} multiply = cache(multiply)
+
 
 //returns index
 function sub(g_index,h_index){
@@ -435,7 +456,6 @@ function get_gcd(x, y) {
 function attemptAddDiaticFractions(g_index){
 	//return false; //uncomment this to disable this feature
 	if (!isANumber(games[g_index])) return false;
-	var zero = games[get_game_index([], [])];
 	if (le(games[g_index],zero)) return false;
 	if (isPositiveInteger(games[g_index])){
 		var n = Number(display(games[g_index].left[0].index))+1
@@ -468,9 +488,7 @@ function attemptAddDiaticFractions(g_index){
 		} else {
 			[rightNumer, rightDenom] = [Number(right),1]
 		}
-		console.log(left)
 		var newFrac = [(leftDenom*rightNumer+rightDenom*leftNumer),leftDenom*rightDenom*2]
-		console.log(newFrac)
 		var gcd = get_gcd(newFrac[0],newFrac[1])
 		newFrac = [newFrac[0]/gcd,newFrac[1]/gcd];
 		var wholePart = (newFrac[0]-newFrac[0]%newFrac[1])/newFrac[1]
