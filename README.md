@@ -48,6 +48,7 @@ The following special syntaxes are supported:
         >> pm1 = {1,-1}
 
 * Syntax like `{1||2|3}` for {1|{2|3}}.
+* `A.B` for Norton Multiplication of A times B.
 * `N` or `-N` where N is just any positive integer, will automatically be turned into the correct game representing that integer.
 * `N_N/N` where the second number is odd and less than the third number, and the third number is a power of two. For instance,
 
@@ -72,15 +73,15 @@ operations:
 
 Additional features added by this fork:
 
+* Norton Multiplication
 * Automatic conversion from any diatic fraction into games and vice versa (1/2 <=> {0|1}, 2_1/2 <=> {1|2}, 3_1/4 <=> {3|3_1/2})
-* Added the ability to cool games
-* Added the ability to heat, overheat, and assymetrically heat games
-* Added the ability to analyze games' atomic weights
+* Cool games
+* Heat, overheat, and assymetrically heat games
+* Analyze games' atomic weights
 
 ## Future goals
 
 * Sometime soon, I plan on implementing a thermograph to analyze hot games. 
-* Norton multiplication. Not exactly sure how I'll add the multiplication symbol, seeing as * is used for star. I might add a dot button representing multiplication, similar to up and down.  
 * I may add an checkbox that enables/disables the automatic addition of any diatic number. I'm not completely decided on whether I want to spend the effort.
 * Similarly to the original github owner, in the much farther future I may add games like domineering or hackenbush to be able to analyze.
 

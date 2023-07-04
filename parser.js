@@ -6,6 +6,9 @@ function atom(str) {
 function parser_plus(first, second) {
 	return {type:'plus', first:first, second:second};
 }
+function parser_times(first, second) {
+	return {type:'times', first:first, second:second};
+}
 
 function unary_minus(x) {
 	return {type:'neg', value:x};
@@ -73,7 +76,7 @@ function lex(str) {
 			return ' ';
 		if(c == '|')
 			return '|';
-		if("{}(),=?+-".indexOf(c) > -1)
+		if("{}(),=?+-.".indexOf(c) > -1)
 			return '!';
 		return 'x';
 	}
@@ -108,7 +111,7 @@ function parse(lexdata) {
 		tokens.push(lexdata[i][0]);
 		locs.push(lexdata[i][1]);
 		c = lexdata[i][0][0];
-		if("?|{},=()+".indexOf(c) > -1)
+		if("?|{},=()+.".indexOf(c) > -1)
 			types.push(c);
 		else if(c == "-")
 			types.push("+");
@@ -186,12 +189,24 @@ function parse(lexdata) {
 	function readExpression() {
 		var running = readTerm();
 		while(!failure && peekType() == '+') {
-			var op = pullValue('+');
+			if (peekType() == '+'){
+				var op = pullValue('+');
+				var second = readTerm();
+				while (!failure && peekType() == '.'){
+					var op = pullValue('.');
+					var third = readTerm();
+					second = parser_times(second,third);
+				}
+				if(op == '+')
+					running = parser_plus(running,second);
+				else
+					running = minus(running,second);
+			}
+		}
+		if (peekType() == '.'){
+			var op = pullValue('.');
 			var second = readTerm();
-			if(op == '+')
-				running = parser_plus(running,second);
-			else
-				running = minus(running,second);
+			running = parser_times(running,second);
 		}
 		return running;
 	}
@@ -364,6 +379,8 @@ function toGame(entity) {
 	switch(entity.type) {
 		case "plus":
 			return add(toGame(entity.first),toGame(entity.second));
+		case "times":
+			return multiply(games[toGame(entity.first)],games[toGame(entity.second)]).index;
 		case "neg":
 			return neg(toGame(entity.value));
 		case "atom":
