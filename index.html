@@ -31,7 +31,7 @@
     <script type="text/javascript" src="parser.js"></script>    
     <script type="text/javascript" src="main.js"></script>
     <p><h3 style="color:black">Examples of expressions you can enter:</h3>
-      <br/>1 = {0|}
+      1 = {0|}
       <br/>*2 = {0,*} <span style="color:black">({0,*} represents {0,*|0,*})</span>
       <br/>5* = 5+* <span style="color:black">(you can assign variables in any field, and that field will just use that value)</span>
       <br/>2+1/2-10+*  <span style="color:black">(any integer or simplified diatic fraction will be converted into a game)</span>
@@ -39,6 +39,20 @@
       <br/>{0||0|-1} <span style="color:black">(this represents tiny 1, or {0|{0|-1}})</span>
       <br/>2.3 <span style="color:black">(Norton multiplication of 2 times 3)</span>
       <br/>3.↑ <span style="color:black">(Remember that Norton multiplication is <i>not</i> commutative)</span>
+      <h3 style="color:black">Default values:</h3>
+      <span style="color:black">0 = {|}
+      <br/>All proper simplified diadic fractions (1, 2_1/2, 5/8, 79, 9_3/4...)
+      <br/>* = {0|0}
+      <br/>↑ = {0|*}
+      <br/>↓ = -↑
+      <br/>↑↑ = ↑+↑
+      <br/>↓↓ = -↑↑
+      <br/>↑* = ↑+*
+      <br/>↓* = -↑*
+      <br/>1* = 1+*
+      <br/>2* = 2+*
+      <br/>3* = 3+*
+      <br/>*2 through *5 = {0,*|0,*} ... {0,*,*2,*3,*4|0,*,*2,*3,*4}</span>
     </p>
   </body>
 </html>

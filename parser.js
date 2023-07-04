@@ -568,7 +568,6 @@ console.log(game2str(g) + " cooled by " + game2str(t) + " is " + game2str(result
 
 calculate("0 = {|}");
 calculate("1 = {0|}");
-calculate("20");
 calculate("* = {0}");
 calculate("1* = {1}");
 calculate("2* = {2}");
