@@ -41,6 +41,8 @@ function recursivePrint(entity) {
 		return entity.value;
 	if(entity.type == "plus")
 		return recursivePrint(entity.first) + "+" + recursivePrint(entity.second);
+	if(entity.type == "times")
+		return recursivePrint(entity.first) + "." + recursivePrint(entity.second);
 	if(entity.type == "comparison")
 		return recursivePrint(entity.first) + entity.operator + recursivePrint(entity.second)
 	if(entity.type == "neg")
@@ -560,10 +562,9 @@ function uppityOutput(input){
 // to test things in the console:
 /*
 function str2game(s){return games[toGame(parse(lex(s))[1])];}
-function game2str(g){return display(g.index);}
-var g = str2game("{{1|0}|-1-1/8}")
-var [result,t] = fullCool(g)
-console.log(game2str(g) + " cooled by " + game2str(t) + " is " + game2str(result))
+f = function(g,i){return innerbounds(g)[i]};
+function test(s,i){console.log(display(f(str2game(s),i).index));}
+
 */
 
 calculate("0 = {|}");
