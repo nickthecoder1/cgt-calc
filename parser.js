@@ -195,7 +195,7 @@ function parse(lexdata) {
 				var op = pullValue('+');
 				var second = readTerm();
 				while (!failure && peekType() == '.'){
-					var op = pullValue('.');
+					var trash = pullValue('.');
 					var third = readTerm();
 					second = parser_times(second,third);
 				}
