@@ -190,26 +190,29 @@ function parse(lexdata) {
 
 	function readExpression() {
 		var running = readTerm();
-		while(!failure && peekType() == '+') {
-			if (peekType() == '+'){
+
+		while (!failure) {
+			while (peekType() == '.') {
+				pullValue('.');
+				var second = readTerm();
+				running = parser_times(running, second);
+			}
+
+			if (peekType() == '+') {
 				var op = pullValue('+');
 				var second = readTerm();
-				while (!failure && peekType() == '.'){
-					var trash = pullValue('.');
+
+				while (peekType() == '.') {
+					pullValue('.');
 					var third = readTerm();
-					second = parser_times(second,third);
+					second = parser_times(second, third);
 				}
-				if(op == '+')
-					running = parser_plus(running,second);
-				else
-					running = minus(running,second);
+				running = (op == '+') ? parser_plus(running, second) : minus(running, second);
+			} else {
+				break;
 			}
 		}
-		if (peekType() == '.'){
-			var op = pullValue('.');
-			var second = readTerm();
-			running = parser_times(running,second);
-		}
+
 		return running;
 	}
 
