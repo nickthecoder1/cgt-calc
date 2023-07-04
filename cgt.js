@@ -227,10 +227,10 @@ function heat(g,t,tL,overheat_at){
 	if (!tL) tL = t;
 	var ell = [];
 	for (var i=0; i<g.left.length; i++)
-		ell.push(add(heat(g.left[i],t,tL,overheat_at).index,t.index))
+		ell.push(add(heat(g.left[i],t,tL,overheat_at).index,tL.index))
 	var arr = [];
 	for (var i=0; i<g.right.length; i++)
-		arr.push(sub(heat(g.right[i],t,tL,overheat_at).index,tL.index))
+		arr.push(sub(heat(g.right[i],t,tL,overheat_at).index,t.index))
 	return games[get_game_index(ell, arr)];
 }
 
