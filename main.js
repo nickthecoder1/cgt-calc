@@ -249,8 +249,8 @@ var tgraph = {
 			this.drawNumber(i,this.map2XCoord(i),this.NLHeight+h*2/25)
 		}
 
-		for (var i=1; i<=temp; i++){
-			this.drawLine(0,this.map2YCoord(i),w,this.map2YCoord(i),'#a0a0a0');
+		for (var i=Math.max(Math.round((temp-1)/10),1); i<=temp; i+=Math.max(Math.round((temp-1)/10),1)){
+			this.drawLine(this.horMargin+5,this.map2YCoord(i),w,this.map2YCoord(i),'#a0a0a0');
 			this.drawNumber(i,this.horMargin,this.map2YCoord(i)+3)
 		}
 
