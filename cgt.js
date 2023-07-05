@@ -208,7 +208,7 @@ function innerbounds(g){
 	var rightbounds = []
 	for (var i = 0; i < g.right.length; i++)
 		rightbounds.push(innerbounds(g.right[i])[0])
-	return [min(leftbounds),max(rightbounds)];
+	return [max(leftbounds),min(rightbounds)];
 } innerbounds = cache(innerbounds);
 
 
@@ -243,6 +243,7 @@ function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 	if (isANumber(g)) return [g,t,dt];
 	var bounds = innerbounds(g);
 	if (eq(bounds[0],bounds[1])) return [bounds[0],t,dt];
+	var tOriginal = t;
 	heatDecrement:
 	while (!eq(zero,t)){
 		var ell = [];
@@ -280,8 +281,11 @@ function cool(g,t, doDraw=false){//returns [cooled_g, t-g_t>0 ? t-g_t : 0, dt]
 		t = games[sub(t.index,dt.index)];
 		g = newG;
 		var bounds = innerbounds(g);
+		if (doDraw){
+			tgraph.drawGame(g,games[sub(tOriginal.index,t.index)]);
+			tOriginal = t;
+		}
 		if (eq(bounds[0],bounds[1])) return [g,t,dt];
-		if (doDraw){/*TODO*/}
 	}
 	return [g,zero,dt];
 }
@@ -290,6 +294,9 @@ function fullCool(g){//returns [cooled g, g_t]
 	var t = zero.index;
 	var bounds = innerbounds(g);
 	var trash;
+	tgraph.clear();
+	tgraph.drawGame(heat(g,one),games[sub(zero.index,one.index)]);
+	tgraph.drawGame(g,one);
 	while (!eq(bounds[0],bounds[1])){
 		var dt;
 		[g,dt,trash] = cool(g, games[one.index], true);
@@ -364,6 +371,16 @@ function get_uppitiness(g){
 	return uppitiness;
 } get_uppitiness = cache(get_uppitiness,false)
 
+function getDominatedIncentives(g){
+	var I = {left:[],right:[]};
+	for (var i=0; i<g.left.length; i++)
+		I.left.push(games[sub(g.left[i].index,g.index)])
+	for (var i=0; i<g.right.length; i++)
+		I.left.push(games[sub(g.index,g.right[i].index)])
+	remove_dominated_options(I);
+	return I.left;
+} getDominatedIncentives = cache(getDominatedIncentives)
+
 function multiply(g,u){
 	if (eq(g,zero) || eq(u,zero))
 		return zero;
@@ -372,13 +389,7 @@ function multiply(g,u){
 	if (isPositiveInteger(g))
 		return games[add(u.index,multiply(games[sub(g.index,one.index)],u).index)];
 
-	var I = {left:[],right:[]};
-	for (var i=0; i<u.left.length; i++)
-		I.left.push(games[sub(u.left[i].index,u.index)])
-	for (var i=0; i<u.right.length; i++)
-		I.left.push(games[sub(u.index,u.right[i].index)])
-	remove_dominated_options(I);
-	I = I.left;
+	var I = getDominatedIncentives(u);
 	var ell = [];
 	var arr = [];
 	for (var j=0; j<I.length; j++){
@@ -390,6 +401,15 @@ function multiply(g,u){
 	}
 	return games[get_game_index(ell,arr)];
 } multiply = cache(multiply)
+
+
+function gameToDiatic(g){
+	if (!isANumber(g)) throw new Error('Can\'t get a diatic of a non-number game');
+	if (eq(g,zero)) return 0;
+	if (le(g,zero)) return -gameToDiatic(games[neg(g.index)]);
+	if (isPositiveInteger(g)) return 1+gameToDiatic(g.left[0]);
+	return (gameToDiatic(g.left[0])+gameToDiatic(g.right[0]))/2
+} gameToDiatic = cache(gameToDiatic)
 
 
 //returns index

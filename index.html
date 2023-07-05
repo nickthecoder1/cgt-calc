@@ -25,11 +25,10 @@
       <input type="button" value="Execute" onclick="execute();">
       <input type="button" class="bigger" value="&#x2191;" onclick="doUp();">
       <input type="button" class="bigger" value="&#x2193;" onclick="doDown();">
+      <span style="color:black" id="checkAndText"><input type="checkbox" id="drawThermoCheck" value="test" checked>clear thermograph?</span>
       </div>
     </form>
-    <script type="text/javascript" src="cgt.js"></script>    
-    <script type="text/javascript" src="parser.js"></script>    
-    <script type="text/javascript" src="main.js"></script>
+    <canvas id="thermograph" width="480" height="270"></canvas>
     <p><h3 style="color:black">Examples of expressions you can enter:</h3>
       1 = {0|}
       <br/>*2 = {0,*} <span style="color:black">({0,*} represents {0,*|0,*})</span>
@@ -54,5 +53,8 @@
       <br/>3* = 3+*
       <br/>*2 through *5 = {0,*|0,*} ... {0,*,*2,*3,*4|0,*,*2,*3,*4}</span>
     </p>
+    <script type="text/javascript" src="cgt.js"></script>    
+    <script type="text/javascript" src="parser.js"></script>    
+    <script type="text/javascript" src="main.js"></script>
   </body>
 </html>

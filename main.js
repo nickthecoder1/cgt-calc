@@ -1,5 +1,7 @@
 var inps = [document.getElementById('input'),document.getElementById('input2'),document.getElementById('input3'),document.getElementById('input4')];
 var out = document.getElementById('output');
+var checkAndText = document.getElementById('checkAndText');
+var clearThermoCheckbox = document.getElementById('drawThermoCheck');
 var currentlySelectedInput = 0;
 
 out.value="Welcome!";
@@ -80,6 +82,8 @@ function operationChange() {
 		inps[id].style.left = 0;
 	}
 	inps[0].style.visibility = "visible";
+	tgraph.canvas.style.display = "none";
+	checkAndText.style.display = "none";
 	switch (operation){
 	case "calc":
 		break;
@@ -91,6 +95,8 @@ function operationChange() {
 		inps[1].style.visibility = "visible";
 		inbetweens[0].innerHTML = "cooled by";
 		inbetweens[1].innerHTML = "(leave blank to cool all the way)";
+		tgraph.canvas.style.display = "";
+		checkAndText.style.display = "none"; //STILL DECIDING ON THIS
 		break;
 	case "compare":
 		inps[0].onkeypress= function(event){if (event.key == "Enter") {inps[1].focus();currentlySelectedInput = 1;}}
@@ -195,6 +201,103 @@ for (var id in inps){
 	setWidths[id]();
 	inp.addEventListener('click', setAsSelected(id));
 }
+//setup the thermograph canvas
+var tgraph = {
+	canvas : document.getElementById('thermograph'),
+	start : function() {
+		this.context = this.canvas.getContext("2d");
+		this.horMargin = this.canvas.width/10;
+		this.verMargin = this.canvas.height/20;
+		this.NLHeight = this.canvas.height-this.verMargin*2;
+		this.maxX = 5;
+		this.minX = -5;
+		this.drawingStarted = false;
+		this.clear();
+		this.drawAxis(5,-5,5);
+		this.prevTemp = 0;
+		this.curTemp = 0;
+		this.allPoints = [];
+	},
+	clear: function(){
+		this.context.fillStyle = "#e8e8e8";
+		this.context.fillRect(0, 0, this.canvas.width, this.canvas.height)
+	},
+	drawLine: function (x1, y1, x2,y2, stroke='black', width=1) {
+		this.context.beginPath();
+		this.context.moveTo(Math.round(x1)+0.5, Math.round(y1)+0.5);
+		this.context.lineTo(Math.round(x2)+0.5, Math.round(y2)+0.5);
+		this.context.strokeStyle = stroke;
+		this.context.lineWidth = width;
+		this.context.stroke();
+	},
+	drawNumber: function(n,x,y){
+		this.context.font = "10px Arial";
+		this.context.fillStyle = "#000000";
+		this.context.textAlign = "center";
+		this.context.fillText(n.toString(), Math.round(x)+0.5, Math.round(y)+0.5);
+	},
+	drawAxis: function(maxX,minX,temp){
+		var w = this.canvas.width;
+		var h = this.canvas.height;
+		//draw the number line
+		this.drawLine(0,this.NLHeight,w,this.NLHeight);
+		this.maxX = maxX;
+		this.minX = minX;
+		this.maxTemp = temp;
+		for (var i=minX; i<=maxX; i+=Math.round((maxX-minX)/8)){
+			this.drawLine(this.map2XCoord(i),this.NLHeight+h/25,this.map2XCoord(i),this.NLHeight-h/25);
+			this.drawNumber(i,this.map2XCoord(i),this.NLHeight+h*2/25)
+		}
 
+		for (var i=1; i<=temp; i++){
+			this.drawLine(0,this.map2YCoord(i),w,this.map2YCoord(i),'#a0a0a0');
+			this.drawNumber(i,this.horMargin,this.map2YCoord(i)+3)
+		}
 
+		this.maxX = maxX;
+		this.minX = minX;
+		this.maxTemp = temp;
+	},
+	map2XCoord: function(n){
+		return this.horMargin+(this.canvas.width-2*this.horMargin)*((this.maxX-n)/(this.maxX-this.minX))
+	},
+	map2YCoord: function(n){
+		return this.verMargin+(this.canvas.height-(this.verMargin+(this.canvas.height-this.NLHeight)))*((this.maxTemp-n)/(this.maxTemp));
+	},
+	drawGame: function(g,dt){
+		// console.log(display(g.index))
+		// console.log(display(dt.index))
+		// console.log([this.curTemp, this.prevTemp])
+		if (!this.drawingStarted){
+			this.curBounds = innerbounds(g);
+			this.curBounds = [gameToDiatic(this.curBounds[0]),gameToDiatic(this.curBounds[1])]
+			this.curTemp = gameToDiatic(dt);
+			this.drawingStarted = true;
+			this.allPoints = [[this.curBounds[0],this.curBounds[1],this.curTemp]];
+		} else {
+			dt = gameToDiatic(dt)
+			this.curTemp += dt;
+			this.curBounds = innerbounds(g);
+			this.curBounds = [gameToDiatic(this.curBounds[0]),gameToDiatic(this.curBounds[1])]
+			var newBounds = innerbounds(g)
+			this.allPoints.push([gameToDiatic(newBounds[0]),gameToDiatic(newBounds[1]),this.curTemp]);
+			if (newBounds[0] == newBounds[1]){
+				var maxX = Math.round(Math.max(this.allPoints[0][0],this.allPoints[0][1])+3)
+				var minX = Math.round(Math.min(this.allPoints[0][0],this.allPoints[0][1])-3)
+				var maxTemp = Math.round(this.curTemp+3);
+				this.clear();
+				this.drawAxis(maxX,minX,maxTemp);
+				this.drawingStarted = false;
+				for(var i=1; i<this.allPoints.length; i++){
+					var t = this.map2YCoord(this.allPoints[i][2]);
+					var t2 = this.map2YCoord(this.allPoints[i-1][2]);
+					this.drawLine(this.map2XCoord(this.allPoints[i][0]),t,this.map2XCoord(this.allPoints[i-1][0]),t2,'#900000');
+					this.drawLine(this.map2XCoord(this.allPoints[i][1]),t,this.map2XCoord(this.allPoints[i-1][1]),t2,'#900000');
+				}
+				this.drawLine(this.map2XCoord(this.curBounds[0]),t,this.map2XCoord(this.curBounds[0]),0,'#900000');
+			}
+		}
+	}
+}
+tgraph.start()
 operationChange()
